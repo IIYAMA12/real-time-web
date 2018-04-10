@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "expose": "ngrok http 3000"
+    "expose": "ngrok http 3000",
+    "expose2": "ngrok http 4444"
   },
   "author": "Jorik van Essen",
   "license": "ISC",

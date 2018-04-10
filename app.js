@@ -83,6 +83,6 @@ routers.init();
 
 
 // Start server
-app.listen(3333, function() {
-    console.log("Real-time-web APP listening at http://localhost:3333/");
+app.listen(3000, function() {
+    console.log("Real-time-web APP listening at http://localhost:3000/");
 });

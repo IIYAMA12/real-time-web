@@ -26,3 +26,6 @@ During this course, students will:
 In the first and second week you will receive oral feedback on your assignments. In week three you will have a chance to present your final assignment during an oral exam. This assessment will make up 100% of your grade for this course.
 
 > If you're seeing this message on a forked repo, it means one of our students hasn't changed the description yet 😈
+
+## Checklist
+- [ ] Clear data for players ingame when a player leaves
