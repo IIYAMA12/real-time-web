@@ -5,7 +5,7 @@ const
     bodyParser = require("body-parser"),
     session = require("express-session"),
     minifyHTML = require("express-minify-html")
-    randomstring = require("randomstring")
+    socket = require("./scripts/socket.js")
 ;
 
 
