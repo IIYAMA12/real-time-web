@@ -1,0 +1,1 @@
+const socket=io.connect("http://localhost:4444");socket.on("news",function(t){console.log(t),socket.emit("my other event",{my:"data"})}),setInterval(function(){socket.emit("stream-orientation",{position:"test",rotation:"test",velocity:"test"})},200);

@@ -44,9 +44,37 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 
-app.get("*", function(req, res, next)    {
-    next();
+var socketApp = require('express')();
+var server = require('http').Server(socketApp);
+var io = require('socket.io')(server);
+
+server.listen(4444);
+console.log("Real-time-web socketApp listening at http://localhost:4444/");
+
+// express().get('/', function (req, res) {
+//   res.sendfile(__dirname + '/index.html');
+// });
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+  socket.on("stream-position", function (data) {
+    console.log("on stream position");
+  });
 });
+      
+
+// https://socket.io/docs/#  
+
+// app.get('/', function (req, res) {
+//     res.sendfile(__dirname + "pages/index");
+// });
+
+// app.get("*", function(req, res, next)    {
+//     next();
+// });
 
 
 
