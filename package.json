@@ -1,0 +1,32 @@
+{
+  "name": "Real-time-web",
+  "version": "1.0.0",
+  "description": "Portfolio website",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "expose": "ngrok http 3000"
+  },
+  "author": "Jorik van Essen",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
+    "express-minify-html": "^0.12.0",
+    "express-session": "^1.15.6",
+    "ngrok": "^3.0.1",
+    "node.js": "0.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.3",
+    "gulp-sass": "^4.0.1",
+    "gulp-minify": "^2.1.0"
+  }
+}
