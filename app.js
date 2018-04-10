@@ -4,11 +4,12 @@ const
     express = require("express"),
     bodyParser = require("body-parser"),
     session = require("express-session"),
-    minifyHTML = require('express-minify-html')
+    minifyHTML = require("express-minify-html")
+    randomstring = require("randomstring")
 ;
 
 
-var sess = {
+const sess = {
     secret: "gfjisdhu5yvdist4fvhsdyutg47sydiywe45iadhwo8",
     cookie: {},
     resave: true,
@@ -44,38 +45,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 
-var socketApp = require('express')();
-var server = require('http').Server(socketApp);
-var io = require('socket.io')(server);
-
-server.listen(4444);
-console.log("Real-time-web socketApp listening at http://localhost:4444/");
-
-// express().get('/', function (req, res) {
-//   res.sendfile(__dirname + '/index.html');
-// });
-
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-  socket.on("stream-position", function (data) {
-    console.log("on stream position");
-  });
+app.get("*", function(req, res, next)    {
+    next();
 });
-      
-
-// https://socket.io/docs/#  
-
-// app.get('/', function (req, res) {
-//     res.sendfile(__dirname + "pages/index");
-// });
-
-// app.get("*", function(req, res, next)    {
-//     next();
-// });
-
 
 
 app.get("/", function(req, res, next)    {
