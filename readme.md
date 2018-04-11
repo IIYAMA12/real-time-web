@@ -10,8 +10,15 @@ Version 1.0.0
 This web app lets you fly with your spaceship inside of an area. Every remote player that joins the website owns his own ship and will be streaming it's orientation to you.
 
 
-## Different ports for default express and using sockets
+## Interaction
 
+---------------------------
+--- MORE is COMING SOON ---
+---------------------------
+
+## Express + sockets, which ports do I have to open?
+
+Different ports for default express and using sockets.
 
 ```JS
 const app = express();
@@ -182,9 +189,9 @@ Receive a trigger event on serverside. server `> client`.
 
 ## Socket events used
 
-
-
-
+---------------------------
+--- MORE is COMING SOON ---
+---------------------------
 
 
 ## Todo
