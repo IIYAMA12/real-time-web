@@ -12,9 +12,9 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 
 ## Interaction
 
----------------------------
+- ------------------------- -
 --- MORE is COMING SOON ---
----------------------------
+- ------------------------- -
 
 ## Express + sockets, which ports do I have to open?
 
@@ -189,9 +189,9 @@ Receive a trigger event on serverside. server `> client`.
 
 ## Socket events used
 
----------------------------
+- ------------------------- -
 --- MORE is COMING SOON ---
----------------------------
+- ------------------------- -
 
 
 ## Todo
