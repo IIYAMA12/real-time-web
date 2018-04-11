@@ -87,10 +87,14 @@ npm start
 ```
 Download the socket script from cloudflare.
 
+---
+
 ```JS
 const socket = io.connect('http://localhost:4444');
 ```
 Establish connection. `client`
+
+---
 
 ```JS
 io.on("connection", function (socket) {
@@ -98,6 +102,8 @@ io.on("connection", function (socket) {
 });
 ```
 A client has been connected. `server`
+
+---
 
 ```JS
 io.on("connection", function (socket) {
@@ -110,12 +116,15 @@ io.on("connection", function (socket) {
 ```
 Detect when a client has been disconnected. `server`
 
+---
+
 ```JS
 socket.emit("event-name" /*, var ... */);
 ```
 Trigger an event on clientside to serverside. `client >` server
 Arguments can be passed.
 
+---
 
 ```JS
 io.on("connection", function (socket) {
@@ -126,6 +135,8 @@ io.on("connection", function (socket) {
 ```
 Receive a trigger event on serverside. client `> server`. The parameters are containing the data that is attached to the event.
 
+---
+
 ```JS
 io.on("connection", function (socket) {
     io.sockets.to(socket.id).emit("event-name" /*, var ... */);
@@ -135,6 +146,8 @@ io.on("connection", function (socket) {
 Trigger an event to a specific client on serverside to clientside. `server >` client.
 Arguments can be passed.
 
+---
+
 ```JS
 io.on("connection", function (socket) {
      socket.broadcast.emit("event-name" /*, var ... */);
@@ -143,6 +156,8 @@ io.on("connection", function (socket) {
 
 Trigger an event to all clients, `except the sender`, on serverside to clientside. `server >` client.
 Arguments can be passed.
+
+---
 
 ```JS
 socket.on("event-name", function (/* var ... */) {
