@@ -83,7 +83,7 @@ const socket = io.connect('http://localhost:4444');
 ```JS
 const socket = io.connect('http://XXXX.ngrok.io ');
 ```
-3.2 When using ngrok, you have to change clienside io connection address with the IP of the socket app. !important!
+3.2 When using ngrok, you have to replace the clienside io-connection-address with the IP of the socket app. !important!
 
 
 ## Start the server!
