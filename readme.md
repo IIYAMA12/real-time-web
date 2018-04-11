@@ -56,7 +56,9 @@ Expose the webite to the internet, part 2. (socket app)
 ---
 
 ### Edit clientside
-After doing this, you have to make a little change on the clientside.
+You have to make a little change on the clientside, before exposing with ngrok is going to work.
+
+---
 
 1. Start gulp, so that you can start working in the `builder` folder. 
 ```bash
@@ -65,7 +67,11 @@ gulp
 * Gulp will minify your scripts.
 * Let you use scss and minify it.
 
+---
+
 2. Now open the file: builder/js/socket-connection.js
+
+---
 
 3. Edit the IP. (expose only)
 
