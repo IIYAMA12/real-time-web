@@ -23,6 +23,8 @@ app.listen(3000, function() {
 ```
 Default express.
 
+---
+
 ```JS
 const socketApp = require("express")();
 const server = require("http").Server(socketApp);
@@ -32,9 +34,11 @@ server.listen(4444);
 ```
 Using express with sockets.
 
+---
+
 In this project I still want to use ejs templates so there are two different apps saved in to two different variables. The default app is running at port 3000 and the socket app is running at port 4444. This means that if you want to expose the website to the internet, you have to set 2 ports open.
 
-## Expose on localhost
+## Expose when hosting on localhost
 
 Enable connection and ports for your website:
 ```bash
@@ -42,10 +46,14 @@ npm run expose
 ```
 Expose the webite to the internet, part 1. (main app)
 
+---
+
 ```bash
 npm run expose2
 ```
 Expose the webite to the internet, part 2. (socket app)
+
+---
 
 ### Edit clientside
 After doing this, you have to make a little change on the clientside.
@@ -69,7 +77,7 @@ const socket = io.connect('http://localhost:4444');
 ```JS
 const socket = io.connect('http://XXXX.ngrok.io ');
 ```
-3.2 When using ngrok, you have to change clienside with the IP of the socket app. !important!
+3.2 When using ngrok, you have to change clienside io connection address with the IP of the socket app. !important!
 
 
 ## Start the server!
