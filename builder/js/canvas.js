@@ -16,15 +16,25 @@ const canvas = {
 
             const canvasElement = document.getElementsByTagName("canvas")[0];
 
+            const 
+                canvasWidth = canvasElement.width,
+                canvasHeight = canvasElement.height
+            ;
 
             var context = canvasElement.getContext('2d');
-            context.clearRect(0, 0, 500, 500);
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
 
-            // context.fillStyle = "black";
+            context.fillStyle = "rgb(230,230,230)";
 
+
+            context.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // context.rect(40, 40, canvasWidth - 80, canvasHeight - 80);
+            // context.stroke(); 
+            
             // context.strokeStyle = "black";
 
-            // context.fillRect(0, 0, 500, 500);
+            
 
             const rocketElement = document.getElementById("rocket");
             // console.log(rocketElement);
@@ -67,7 +77,7 @@ const canvas = {
                         position.y = 0;
                     }
 
-                    console.log(position, rotation);
+                    
 
                     const 
                         imageSizeX = 50 * rocketScale, 
@@ -75,8 +85,8 @@ const canvas = {
                     ;
 
                     const 
-                        x = position.x / 100 * 500 - (imageSizeX / 2), 
-                        y = position.y / 100 * 500 - (imageSizeY / 2)
+                        x = position.x / 100 * (canvasWidth - 80) + 40, 
+                        y = position.y / 100 * (canvasHeight - 80)  + 40
                     ;
                     
 
