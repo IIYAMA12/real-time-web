@@ -91,10 +91,9 @@ io.on("connection", function (socket) {
 
             players.data.set(id, "username", username);
             
-            console.log("??", players.data.get(id, "username"));
 
             playerData = players.data.get(id);
-            console.log("new player", socket.id, id, playerData)
+
             players.data.session.setRef(socket.id, playerData);
         }
         
@@ -133,7 +132,7 @@ io.on("connection", function (socket) {
         console.log("diconnected", socket.id);
         
         const playerData = players.data.session.getRef(socket.id);
-        console.log(players.data.session.ref)
+
         if (playerData) {
             socket.broadcast.emit("onPlayerDisconnect_s", playerData.id);
         }

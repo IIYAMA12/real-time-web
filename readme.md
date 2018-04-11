@@ -1,31 +1,167 @@
 # Real Time Web course repo
 
-This is the course repo for the 2018 edition of the course 'Real Time Web' which is part of the minor 'web' taught at the University of Applied Sciences Amsterdam.
 
-During this course, students will:
-* Build a Node Web App which consumes an external data source through an API and serves a frontend using routing and templating techniques.
-* Create a "live" web app which reflects changes to the back-end data model in reactive front-end views, using real-time, event-based, messaging technologies like sockets or server-sent-events.
-* Describe their work in a professional readme with insightful diagrams showing the life cycle of their data.
 
-## Week 1
-[Slides](https://drive.google.com/open?id=1QxeKsSXnf9poJFWoEe_slHuMb7apB-2eNyUTzi18kcQ)
+![Example of the game version 1.0.0](readme-content/game-example.png)
+Version 1.0.0
 
-[Assignments](https://drive.google.com/open?id=1OUspHz0enLpoVjbyHMHpAQCjSEmkn8rfHbkoSuwjw4M) (in Dutch)
+- [Assignment](ASSIGNMENT.md)
 
-## Week 2
-[Slides](https://drive.google.com/open?id=1-tI7rFjHchbph6FEqpNvDi7XCh3Uy-3bohi_jBdZhcQ)
+This web app lets you fly with your spaceship inside of an area. Every remote player that joins the website owns his own ship and will be streaming it's orientation to you.
 
-[Assignments](https://drive.google.com/open?id=1rjE1bG-rrgfEOssMxCYr7Q0Ba5BJs9WKkvVvjI7y2fQ) (in Dutch)
 
-## Week 3
-[Slides](https://drive.google.com/open?id=1BHoe8Fif7nLA00V4WEANJANnObxHBnVnwnQHnfXl4aM)
+## Different ports for default express and using sockets
 
-[Assignments](https://drive.google.com/open?id=1zoRC5kDeSQad8vdi62u6AEj_SfpvPzKE7wjYTsdO2JI) (in Dutch)
 
-## Grading
-In the first and second week you will receive oral feedback on your assignments. In week three you will have a chance to present your final assignment during an oral exam. This assessment will make up 100% of your grade for this course.
+```JS
+const app = express();
 
-> If you're seeing this message on a forked repo, it means one of our students hasn't changed the description yet 😈
+// Start server
+app.listen(3000, function() {
+    console.log("Real-time-web APP listening at http://localhost:3000/");
+});
+```
+Default express.
 
-## Checklist
-- [ ] Clear data for players ingame when a player leaves
+```JS
+const socketApp = require("express")();
+const server = require("http").Server(socketApp);
+const io = require("socket.io")(server);
+
+server.listen(4444);
+```
+Using express with sockets.
+
+In this project I still want to use ejs templates so there are two different apps saved in to two different variables. The default app is running at port 3000 and the socket app is running at port 4444. This means that if you want to expose the website to the internet, you have to set 2 ports open.
+
+## Expose on localhost
+
+Enable connection and ports for your website:
+```bash
+npm run expose
+```
+Expose the webite to the internet, part 1. (main app)
+
+```bash
+npm run expose2
+```
+Expose the webite to the internet, part 2. (socket app)
+
+### Edit clientside
+After doing this, you have to make a little change on the clientside.
+
+1. Start gulp, so that you can start working in the `builder` folder. 
+```bash
+gulp
+```
+* Gulp will minify your scripts.
+* Let you use scss and minify it.
+
+2. Now open the file: builder/js/socket-connection.js
+
+3. Edit the IP. (expose only)
+
+```JS
+const socket = io.connect('http://localhost:4444');
+```
+3.1 With localhost.
+
+```JS
+const socket = io.connect('http://XXXX.ngrok.io ');
+```
+3.2 When using ngrok, you have to change clienside with the IP of the socket app. !important!
+
+
+## Start the server!
+
+Before you start make sure the ports 3000 and 4444 are open.
+
+Start the app.
+```bash
+npm start
+```
+## Socket
+
+```HTML
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+```
+Download the socket script from cloudflare.
+
+```JS
+const socket = io.connect('http://localhost:4444');
+```
+Establish connection. `client`
+
+```JS
+io.on("connection", function (socket) {
+    // , this function block created for each client.
+});
+```
+A client has been connected. `server`
+
+```JS
+io.on("connection", function (socket) {
+    
+    socket.on("disconnect", function () {
+
+    });
+    
+});
+```
+Detect when a client has been disconnected. `server`
+
+```JS
+socket.emit("event-name" /*, var ... */);
+```
+Trigger an event on clientside to serverside. `client >` server
+Arguments can be passed.
+
+
+```JS
+io.on("connection", function (socket) {
+    socket.on("event-name", function (/* var ... */) {
+
+    });
+});
+```
+Receive a trigger event on serverside. client `> server`. The parameters are containing the data that is attached to the event.
+
+```JS
+io.on("connection", function (socket) {
+    io.sockets.to(socket.id).emit("event-name" /*, var ... */);
+});
+```
+
+Trigger an event to a specific client on serverside to clientside. `server >` client.
+Arguments can be passed.
+
+```JS
+io.on("connection", function (socket) {
+     socket.broadcast.emit("event-name" /*, var ... */);
+});
+```
+
+Trigger an event to all clients, `except the sender`, on serverside to clientside. `server >` client.
+Arguments can be passed.
+
+```JS
+socket.on("event-name", function (/* var ... */) {
+
+});
+```
+Receive a trigger event on serverside. server `> client`.
+
+## Socket events used
+
+
+
+
+
+
+## Todo
+- [X] Added private and public player data. (The session socket ID is for example only available in the private data, and the user game ID is available in both.)
+- [X] Stream orientation with remote players
+- [X] Sync username with remote players
+- [X] Clean up disconnected remote players.
+- [ ] Collision detection
+- [ ] Fix no focus on browser tab, which causes the animation frame to stop. This will cause desync, because the player spaceship animation goes on by the remote players.
