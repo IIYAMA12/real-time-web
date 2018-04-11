@@ -1,0 +1,1 @@
+socket.on("onPlayerUsernameChange_s",function(e,a){void 0!=playersData[e]&&(playersData[e].username=a)}),document.getElementById("username").addEventListener("input",function(e){const a=e.target;void 0!=yourData&&(yourData.username=a.value,socket.emit("onPlayerUsernameChange_c",a.value))});

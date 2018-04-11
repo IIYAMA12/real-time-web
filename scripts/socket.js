@@ -15,15 +15,30 @@ const players = {
         public: {
 
         },
-        set: function (id, data, private) {
-            if (!private) {
-                this.public[id] = data;
+        set: function (id, key, data, privateData) {
+            if (!privateData) {
+                if (key == "socketId") {
+                    console.log("Add data", data, " on key", key);
+                }
+                this.public[id][key] = data;
             }
-            this.private[id] = data;
+            this.private[id][key] = data;
             return true;
         },
-        get: function (id) {
-            return this.private[id] != undefined ? this.private[id] : this.public[id];
+        get: function (id, key, privateData) {
+            if (this.private[id] != undefined) {
+                if (!privateData) {
+                    if (key != undefined) {
+                        return this.public[id][key];
+                    }
+                    return this.public[id];
+                } else {
+                    if (key != undefined) {
+                        return this.private[id][key] != undefined ? this.private[id][key] : this.public[id][key];
+                    }
+                    return this.private[id] != undefined ? this.private[id] : this.public[id];
+                }
+            }
         },
         delete: function (id) {
             delete this.public[id];
@@ -42,7 +57,7 @@ const players = {
                 delete this.ref[id];
             },
             disconnect: function (id) {
-                console.log("disconnect", players.data.session.ref, id)
+                console.log("disconnect")
                 
 
                 const playerData = players.data.session.getRef(id);
@@ -56,16 +71,15 @@ const players = {
     },
     new: function () {
         const id = randomstring.generate();
-        const playerData = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: -1}}};
-        this.data.private[id] = playerData;
-        this.data.public[id] = playerData;
+        this.data.private[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: -1}}};
+        this.data.public[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: -1}}};
         return id;
     }
 };
 
 
 io.on("connection", function (socket) {
-    socket.on("onPlayerJoin_c", function (data) {
+    socket.on("onPlayerJoin_c", function (username) {
         console.log("onPlayerJoin_c");
         let id;
 
@@ -73,10 +87,14 @@ io.on("connection", function (socket) {
         if (playerData == undefined) {
             id = players.new();
 
-            players.data.set("socketId", socket.id, true);
+            players.data.set(id, "socketId", socket.id, true);
+
+            players.data.set(id, "username", username);
+            
+            console.log("??", players.data.get(id, "username"));
 
             playerData = players.data.get(id);
-            console.log("new player", socket.id, id)
+            console.log("new player", socket.id, id, playerData)
             players.data.session.setRef(socket.id, playerData);
         }
         
@@ -93,12 +111,21 @@ io.on("connection", function (socket) {
     });
 
     socket.on("onStreamOrientation_c", function (orientation) {
-        players.data.set("orientation", orientation);
+        
         const playerData = players.data.session.getRef(socket.id);
 
 
         if (playerData != undefined && playerData.id != undefined) {
+            players.data.set(playerData.id, "orientation", orientation);
             socket.broadcast.emit("onStreamOrientation_s", playerData.id, orientation);
+        }
+    });
+
+    socket.on("onPlayerUsernameChange_c", function (username) {
+        const playerData = players.data.session.getRef(socket.id);
+        if (playerData != undefined && playerData.id != undefined) {
+            players.data.set(playerData.id, "username", username);
+            socket.broadcast.emit("onPlayerUsernameChange_s", playerData.id, username);
         }
     });
 

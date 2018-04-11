@@ -28,19 +28,15 @@ const canvas = {
 
 
             context.fillRect(0, 0, canvasWidth, canvasHeight);
-
-            // context.rect(40, 40, canvasWidth - 80, canvasHeight - 80);
-            // context.stroke(); 
-            
-            // context.strokeStyle = "black";
-
             
 
             const rocketElement = document.getElementById("rocket");
-            // console.log(rocketElement);
+
             
             context.rotate(0);
-            
+            context.textAlign="center"; 
+            context.font="20px Georgia";
+
             const rocketScale = 0.5;
             for (const id in playersData) {
                 
@@ -92,8 +88,17 @@ const canvas = {
 
                     rotation *= Math.PI / 180;
 
+                    
+
+
                     context.translate(x, y);
                     
+                    if (playerData.username != undefined) {
+                        context.fillStyle = "black";
+                        context.fillText(playerData.username, 0, -50); //
+                    }
+
+
                     context.rotate(rotation);
                     // console.log(playerData.orientation.rotation);
                     // console.log("rotation:", playerData.orientation.rotation);
@@ -104,13 +109,7 @@ const canvas = {
                     context.rotate(-rotation);
                     context.translate(-x, -y);
                 }
-                
-
-                
-                
-                // console.log("playerData", playerData)
             }
-            // console.log("counter:", counter);
 
             if ("requestAnimationFrame" in window) {
                 canvas.render.animationFrameRequest = window.requestAnimationFrame(canvas.render.func);

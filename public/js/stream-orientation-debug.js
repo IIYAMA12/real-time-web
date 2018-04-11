@@ -1,10 +1,4 @@
-let playersData = {};
-let yourData;
 
-window.addEventListener("load", function () {
-    console.log("loaded_c")
-    socket.emit("onPlayerJoin_c");
-});
 
 
 socket.on("onPlayerJoin_s", function (gameData) {
@@ -19,18 +13,15 @@ socket.on("onPlayerJoin_s", function (gameData) {
     }, 100);
 
     socket.on("onStreamOrientation_s", function (id, orientation) {
-        console.log("onStreamOrientation_s id", id);
         if (playersData[id] != undefined) {
             playersData[id].orientation = orientation;
-            // console.log("orientation yes send");
         }
-        // console.log("onStreamOrientation_s", data);
     });
 });
 
 socket.on("onRemotePlayerJoin_s", function (data) {
     console.log("onRemotePlayerJoin_s", data.id)
-    // console.log("streamNewPlayerData_s", data);
+
     const id = data.id;
     playersData[id] = data;
 });
@@ -43,7 +34,6 @@ socket.on("onPlayerDisconnect_s", function (id) {
 
 
 document.addEventListener("keydown", function (e) {
-    console.log("yourData", yourData);
     if (!e) {
         e = window.event;
     }
@@ -56,14 +46,14 @@ document.addEventListener("keydown", function (e) {
     switch(code) {
         case 37:
             // Key left.
-            yourData.orientation.rotation += 10;
+            yourData.orientation.rotation -= 10;
             break;
         case 38:
             // Key up.
             break;
         case 39:
             // Key right.
-            yourData.orientation.rotation -= 10;
+            yourData.orientation.rotation += 10;
             break;
         case 40:
     };

@@ -1,0 +1,2 @@
+let playersData = {};
+let yourData;
