@@ -8,6 +8,48 @@ const canvas = {
         }
     },
     render: {
+        image: {
+            components: {
+                ship: {
+                    name: "rocket-frame",
+                    friendlyName: "rocket",
+                    extension: "png",
+                    currentFrame: 1,
+                    maxFrames: 3,
+                    elements: []
+                }
+            },
+            request: {
+                frame: function (componentName) {
+                    const component = canvas.render.image.components[componentName];
+                    if (component) {
+                        component.currentFrame++;
+                        if (component.currentFrame > component.maxFrames) {
+                            component.currentFrame = 1;
+                        }
+                        return component.currentFrame;
+                    }
+                },
+                componentElement: function (componentName, frame) {
+                    const component = canvas.render.image.components[componentName];
+                    if (component) {
+                        
+                        if (component.elements[frame - 1] == undefined) {
+                            const element = document.createElement("img");
+                            element.src = "img/" + component.name + frame + "." + component.extension;
+                            
+                            element.alt = component.friendlyName;
+                            component.elements[frame - 1] = {element: element, loaded: false};
+                            element.addEventListener("load", function(e) {
+                                console.log("loaded frame");
+                            });
+                        } else {
+                            return component.elements[frame - 1];
+                        }
+                    }
+                }
+            }
+        },
         func: function (timeStamp) {
             var speedFactor = 1;
             if (canvas.render.lastTimeStamp != undefined) {
@@ -38,6 +80,9 @@ const canvas = {
             context.font="20px Georgia";
 
             const rocketScale = 0.5;
+
+            const imageRequests = canvas.render.image.request;
+
             for (const id in playersData) {
                 
                 const playerData = playersData[id];
@@ -102,9 +147,21 @@ const canvas = {
                     context.rotate(rotation);
                     // console.log(playerData.orientation.rotation);
                     // console.log("rotation:", playerData.orientation.rotation);
-
                     
-                    context.drawImage(rocketElement, -(imageSizeX / 2), -(imageSizeY / 2), imageSizeX, imageSizeY);
+                    // console.log();
+                    const frame = imageRequests.frame("ship");
+                    const imageData = imageRequests.componentElement("ship", frame);
+
+                    let image = rocketElement;
+
+                    // console.log();
+                    // imageRequests.componentElement;
+                    
+                    if (!imageData.loaded) {
+                        image = imageData.element;
+                    }
+
+                    context.drawImage(image, -(imageSizeX / 2), -(imageSizeY / 2), imageSizeX, imageSizeY);
                     
                     context.rotate(-rotation);
                     context.translate(-x, -y);
