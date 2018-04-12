@@ -5,19 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <link rel="stylesheet" href="css/main.css">
+    <title>Rocket yeah</title>
 </head>
 <body>
     <main>
         <canvas height="1000" width="1000"></canvas>
         <img src="img/rocket.png" id="rocket">
-        <label for="username">Username:</label>
-        <input type="text" id="username">
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username">
+        </form>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
     
     <script src="js/socket-connection-debug.js"></script>
-    
+
+    <script src="js/frame-render.js"></script>
+
     <script src="js/controller.js"></script>
 
     <script src="js/player-data-debug.js"></script>

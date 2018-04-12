@@ -5,10 +5,12 @@ const controller = {
     },
     keyState: {
         left: false,
-        right: false
+        right: false,
+        space: false
     },
     eventFunctions: {
         keyStateChange: function (e) {
+            
             if (!e) {
                 e = window.event;
             }
@@ -20,7 +22,7 @@ const controller = {
             if (e.charCode && code == 0) {
                 code = e.charCode;
             }
-        
+
             switch(code) {
                 case 37:
                     // Key left.
@@ -34,7 +36,14 @@ const controller = {
                     controller.keyState.right = state;
                     break;
                 case 40:
+                    // down
+                    break;
+                case 32: 
+                    // space
+                    controller.keyState.space = state;
+                    break;
             };
+            e.preventDefault();
         }
     }
 };

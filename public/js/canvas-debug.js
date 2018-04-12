@@ -1,17 +1,82 @@
-function updatePlayerRotation (speedFactor) {
+function updatePlayerRotation (timeStamp, timeslice) {
+    const speedFactor = timeslice / 17;
     const keyState = controller.keyState;
     if ((keyState.left || keyState.right) && !(keyState.left && keyState.right)) {
         if (keyState.left) {
-            yourData.orientation.rotation -= speedFactor;
+            yourData.orientation.rotation -= speedFactor * 2;
         } else {
-            yourData.orientation.rotation += speedFactor;
+            yourData.orientation.rotation += speedFactor * 2;
         }
     }
 }
 
+const projectiles = [];
+
+function updateProjectilePosition (timeStamp, timeslice) {
+    const speedFactor = timeslice / 17;
+
+}
+
+let nextProjectileFireTime = 0;
+function projectileFireRate (timeStamp) {
+
+    if (yourData != undefined && controller.keyState.space && timeStamp > nextProjectileFireTime) {
+        const position = yourData.orientation.position;
+
+        let rotation = yourData.orientation.rotation;
+
+        const rotOffset =  ((rotation - 90) * 3.141592653 * 2)/360;
+        
+        const projectile = {
+            position: {},
+            velocity: {}
+        }
+
+        const offset = 7;
+
+        projectile.position.x = position.x + (Math.cos(rotOffset) * offset);
+        projectile.position.y  = position.y + (Math.sin(rotOffset) * offset);
+
+        projectile.velocity.x = (projectile.position.x - position.x) / offset,
+        projectile.velocity.y = (projectile.position.y - position.y) / offset
+
+
+        socket.emit("onSyncProjectile_c", projectile);
+
+        nextProjectileFireTime = timeStamp + 300;
+    }
+}
+
+
+
+socket.on("onSyncProjectile_s", function (projectileData) {
+    projectiles[projectiles.length] = projectileData;
+});
+
+
+socket.on("onSyncProjectileDestroy_s", function (id) {
+    for (let i = 0; i < projectiles.length; i++) {
+        const projectile = projectiles[i];
+        if (projectile.id === id) {
+            projectiles.splice(i, 1);
+            break;
+        }
+    }
+});
+
+
 const canvas = {
     init: function () {
-        // todo
+
+        frameRender.attachFunction(updatePlayerRotation);
+        frameRender.attachFunction(updateProjectilePosition);
+
+        frameRender.attachFunction(projectileFireRate);
+
+        frameRender.attachFunction(canvas.render.func);
+        
+        
+
     },
     collision: {
         check: function () {
@@ -70,11 +135,9 @@ const canvas = {
                 }
             }
         },
-        func: function (timeStamp) {
-            var speedFactor = 1;
-            if (canvas.render.lastTimeStamp != undefined) {
-                speedFactor = (timeStamp - canvas.render.lastTimeStamp) / 17;
-            }
+        func: function (timeStamp, timeslice) {
+            const speedFactor = timeslice / 17;
+
 
             const canvasElement = document.getElementsByTagName("canvas")[0];
 
@@ -83,7 +146,7 @@ const canvas = {
                 canvasHeight = canvasElement.height
             ;
 
-            var context = canvasElement.getContext('2d');
+            const context = canvasElement.getContext('2d');
             context.clearRect(0, 0, canvasWidth, canvasHeight);
 
             context.fillStyle = "rgb(230,230,230)";
@@ -103,7 +166,34 @@ const canvas = {
 
             const imageRequests = canvas.render.image.request;
 
-            updatePlayerRotation(speedFactor); // local player only.
+            for (let i = 0; i < projectiles.length; i++) {
+                const projectileData = projectiles[i];
+
+                const position = projectileData.position;
+                const velocity = projectileData.velocity;
+                
+                projectileData.position.x += projectileData.velocity.x * speedFactor;
+                projectileData.position.y += projectileData.velocity.y * speedFactor;
+
+                context.beginPath();
+                context.arc(position.x / 100 * (canvasWidth - 80) + 40, position.y / 100 * (canvasHeight - 80) + 40, 3, 0, 2 * Math.PI);
+                context.fillStyle = "red";
+                context.fill();
+
+                if (projectileData.owner != yourData.id) {
+                    const localPlayerPosition = yourData.orientation.position;
+
+                    const a = localPlayerPosition.x - position.x;
+                    const b = localPlayerPosition.y - position.y;
+
+                    const distance = Math.sqrt( a*a + b*b );
+                    // https://stackoverflow.com/questions/20916953/get-distance-between-two-points-in-canvas
+
+                    if (distance < 4) { // default: 4
+                        yourData.orientation.position = {x: 50, y: 50};
+                    }
+                }
+            }
 
             for (const id in playersData) {
                 
@@ -111,6 +201,7 @@ const canvas = {
                 
                 if (playerData.orientation != undefined) {
                     const position = playerData.orientation.position;
+
 
                     const velocity = playerData.orientation.velocity;
 
@@ -166,7 +257,18 @@ const canvas = {
                     }
 
 
+
+
                     context.rotate(rotation);
+
+                    // Laser sign
+                    /*
+                        context.beginPath();
+                        context.moveTo(0,0);
+                        context.strokeStyle = "red";
+                        context.lineTo(0, -Math.max(canvasWidth, canvasHeight));
+                        context.stroke();
+                    */
                     
 
                     const frame = imageRequests.frame("ship");
@@ -184,31 +286,6 @@ const canvas = {
                     context.rotate(-rotation);
                     context.translate(-x, -y);
                 }
-            }
-
-            if ("requestAnimationFrame" in window) {
-                canvas.render.animationFrameRequest = window.requestAnimationFrame(canvas.render.func);
-            } else {
-                canvas.render.animationTimer = setTimeout(canvas.render.func, 30, new Date().getTime());
-            }
-        },
-        start: function () {
-            if (this.animationFrameRequest == undefined) {
-
-                if ("requestAnimationFrame" in window) {
-                    this.animationFrameRequest= window.requestAnimationFrame(this.func);
-                } else {
-                    canvas.render.animationTimer = setTimeout(canvas.render.func, 30, new Date().getTime());
-                }
-            }
-        },
-        stop: function () {
-            if (this.animationFrameRequest != undefined) {
-                window.cancelAnimationFrame(this.animationFrameRequest);
-                delete this.animationFrameRequest;
-            } else if (this.animationTimer != undefined) {
-                clearTimeout(this.animationTimer);
-                delete this.animationTimer;
             }
         }
     }

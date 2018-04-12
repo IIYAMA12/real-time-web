@@ -1,0 +1,42 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+img {
+    display: none;
+    visibility: hidden;
+}
+
+main {
+    display: block;
+    flex-wrap: wrap;
+    > * {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+}
+
+canvas {
+    display: block;
+    background-color: #e6e6e6;
+}
+
+form {
+    width: 1000px;
+    background: black;
+    display: flex;
+    flex-wrap: nowrap;
+    box-sizing: border-box;
+    color: white;
+    padding: 1rem;
+    > * {
+        flex-grow: 0;
+        flex-shrink: 0;
+        // flex-basis: 100%;
+    }
+    label {
+        margin-right: 1.5rem;
+        color: inherit;
+    }
+}

@@ -1,11 +1,10 @@
 
 
 socket.on("onPlayerJoin_s", function (gameData) {
-    console.log("onPlayerJoin_s", gameData.id);
     playersData = gameData.playersData;
     yourData = playersData[gameData.id];
 
-    canvas.render.start();
+    frameRender.start();
 
     setInterval(function (){
         socket.emit("onStreamOrientation_c", yourData.orientation);

@@ -1,0 +1,1 @@
+body{font-family:sans-serif;margin:0}img{display:none;visibility:hidden}main{display:block;flex-wrap:wrap}main>*{flex-grow:0;flex-shrink:0}canvas{display:block;background-color:#e6e6e6}form{width:1000px;background:#000;display:flex;flex-wrap:nowrap;box-sizing:border-box;color:#fff;padding:1rem}form>*{flex-grow:0;flex-shrink:0}form label{margin-right:1.5rem;color:inherit}
