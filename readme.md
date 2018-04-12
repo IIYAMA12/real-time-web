@@ -12,10 +12,13 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 
 ## Navigation
 
-[Test](#Interaction)
+[Interaction](#Interaction)
+[](#)
+[](#)
+[](#)
 
 
-## (#Interaction)
+## Interaction {#Interaction}
 
 - ------------------------- -
 --- MORE is COMING SOON ---
