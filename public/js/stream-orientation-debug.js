@@ -1,6 +1,5 @@
 
 
-
 socket.on("onPlayerJoin_s", function (gameData) {
     console.log("onPlayerJoin_s", gameData.id);
     playersData = gameData.playersData;
@@ -33,28 +32,3 @@ socket.on("onPlayerDisconnect_s", function (id) {
 
 
 
-document.addEventListener("keydown", function (e) {
-    if (!e) {
-        e = window.event;
-    }
-
-    let code = e.keyCode;
-    if (e.charCode && code == 0) {
-        code = e.charCode;
-    }
-
-    switch(code) {
-        case 37:
-            // Key left.
-            yourData.orientation.rotation -= 10;
-            break;
-        case 38:
-            // Key up.
-            break;
-        case 39:
-            // Key right.
-            yourData.orientation.rotation += 10;
-            break;
-        case 40:
-    };
-});

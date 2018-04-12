@@ -1,6 +1,17 @@
+function updatePlayerRotation (speedFactor) {
+    const keyState = controller.keyState;
+    if ((keyState.left || keyState.right) && !(keyState.left && keyState.right)) {
+        if (keyState.left) {
+            yourData.orientation.rotation -= speedFactor;
+        } else {
+            yourData.orientation.rotation += speedFactor;
+        }
+    }
+}
+
 const canvas = {
     init: function () {
-
+        // todo
     },
     collision: {
         check: function () {
@@ -14,8 +25,12 @@ const canvas = {
                     name: "rocket-frame",
                     friendlyName: "rocket",
                     extension: "png",
-                    currentFrame: 1,
-                    maxFrames: 3,
+                    frame: {
+                        current: 1,
+                        max: 3,
+                        delay: 300,
+                        nextTime: 0
+                    },
                     elements: []
                 }
             },
@@ -23,17 +38,23 @@ const canvas = {
                 frame: function (componentName) {
                     const component = canvas.render.image.components[componentName];
                     if (component) {
-                        component.currentFrame++;
-                        if (component.currentFrame > component.maxFrames) {
-                            component.currentFrame = 1;
+                        const frameData = component.frame;
+                        const timeNow = new Date().getTime()
+                        if (timeNow > frameData.nextTime) {
+                            
+                            frameData.nextTime = timeNow + frameData.delay;
+
+                            frameData.current++;
+                            if (frameData.current > frameData.max) {
+                                frameData.current = 1;
+                            }
                         }
-                        return component.currentFrame;
+                        return frameData.current;
                     }
                 },
                 componentElement: function (componentName, frame) {
                     const component = canvas.render.image.components[componentName];
                     if (component) {
-                        
                         if (component.elements[frame - 1] == undefined) {
                             const element = document.createElement("img");
                             element.src = "img/" + component.name + frame + "." + component.extension;
@@ -41,11 +62,10 @@ const canvas = {
                             element.alt = component.friendlyName;
                             component.elements[frame - 1] = {element: element, loaded: false};
                             element.addEventListener("load", function(e) {
-                                console.log("loaded frame");
+                                component.elements[frame - 1].loaded = true;
                             });
-                        } else {
-                            return component.elements[frame - 1];
                         }
+                        return component.elements[frame - 1];
                     }
                 }
             }
@@ -82,6 +102,8 @@ const canvas = {
             const rocketScale = 0.5;
 
             const imageRequests = canvas.render.image.request;
+
+            updatePlayerRotation(speedFactor); // local player only.
 
             for (const id in playersData) {
                 
@@ -145,20 +167,16 @@ const canvas = {
 
 
                     context.rotate(rotation);
-                    // console.log(playerData.orientation.rotation);
-                    // console.log("rotation:", playerData.orientation.rotation);
                     
-                    // console.log();
+
                     const frame = imageRequests.frame("ship");
                     const imageData = imageRequests.componentElement("ship", frame);
 
                     let image = rocketElement;
 
-                    // console.log();
-                    // imageRequests.componentElement;
-                    
-                    if (!imageData.loaded) {
+                    if (imageData != undefined && imageData.loaded) {
                         image = imageData.element;
+                        
                     }
 
                     context.drawImage(image, -(imageSizeX / 2), -(imageSizeY / 2), imageSizeX, imageSizeY);
@@ -176,7 +194,7 @@ const canvas = {
         },
         start: function () {
             if (this.animationFrameRequest == undefined) {
-                // this.lastTimeStamp = new Date().getTime();
+
                 if ("requestAnimationFrame" in window) {
                     this.animationFrameRequest= window.requestAnimationFrame(this.func);
                 } else {
