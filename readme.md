@@ -12,13 +12,13 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 
 ## Navigation
 
-- [Interaction](#Interaction)
-- [Express + sockets, which ports do I have to open?](#Express-+-sockets,-which-ports-do-I-have-to-open?)
-- [Expose when hosting on localhost](#Expose-when-hosting-on-localhost)
-- [Start the server!](#Start-the-server!)
-- [Socket](#Socket)
-- [Socket events used](#Socket-events-used)
-- [Todo](#Todo)
+- [Interaction](#interaction)
+- [Express + sockets, which ports do I have to open?](#express-+-sockets,-which-ports-do-i-have-to-open?)
+- [Expose when hosting on localhost](#expose-when-hosting-on-localhost)
+- [Start the server!](#start-the-server!)
+- [Socket](#socket)
+- [Socket events used](#socket-events-used)
+- [Todo](#todo)
 
 
 
