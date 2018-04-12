@@ -13,18 +13,22 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 ## Navigation
 
 [Interaction](#Interaction)
-[](#)
-[](#)
-[](#)
+[Express + sockets, which ports do I have to open?](#)
+[Expose when hosting on localhost](#)
+[Start the server!](#)
+[Socket](#)
+[Socket events used](#)
+[Todo](#)
 
 
-## Interaction {#Interaction}
+
+# Interaction
 
 - ------------------------- -
 --- MORE is COMING SOON ---
 - ------------------------- -
 
-## Express + sockets, which ports do I have to open?
+# Express + sockets, which ports do I have to open?
 
 Different ports for default express and using sockets.
 
@@ -53,7 +57,7 @@ Using express with sockets.
 
 In this project I still want to use ejs templates so there are two different apps saved in to two different variables. The default app is running at port 3000 and the socket app is running at port 4444. This means that if you want to expose the website to the internet, you have to set 2 ports open.
 
-## Expose when hosting on localhost
+# Expose when hosting on localhost
 
 Enable connection and ports for your website:
 ```bash
@@ -101,7 +105,7 @@ const socket = io.connect('http://XXXX.ngrok.io ');
 3.2 When using ngrok, you have to replace the clienside io-connection-address with the IP of the socket app. !important!
 
 
-## Start the server!
+# Start the server!
 
 Before you start make sure the ports 3000 and 4444 are open.
 
@@ -109,7 +113,7 @@ Start the app.
 ```bash
 npm start
 ```
-## Socket
+# Socket
 
 ```HTML
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
@@ -195,14 +199,14 @@ socket.on("event-name", function (/* var ... */) {
 ```
 Receive a trigger event on serverside. server `> client`.
 
-## Socket events used
+# Socket events used
 
 - ------------------------- -
 --- MORE is COMING SOON ---
 - ------------------------- -
 
 
-## Todo
+# Todo
 - [X] Added private and public player data. (The session socket ID is for example only available in the private data, and the user game ID is available in both.)
 - [X] Stream orientation with remote players
 - [X] Sync username with remote players
