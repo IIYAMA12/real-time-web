@@ -1,1 +1,1 @@
-const socket=io.connect("https://0a1764f1.ngrok.io");
+var getUrl=window.location,baseUrl=getUrl.protocol+"//"+getUrl.host.split(":")[0];const socket=io.connect(baseUrl+":4444");console.log(baseUrl);
