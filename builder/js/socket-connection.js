@@ -1,1 +1,1 @@
-const socket = io.connect("http://f960f98e.ngrok.io"); // "http://localhost:4444"
+const socket = io.connect("http://localhost:4444"); // "http://localhost:4444"

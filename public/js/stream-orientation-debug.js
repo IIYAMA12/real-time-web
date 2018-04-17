@@ -1,6 +1,6 @@
 
 
-socket.on("onPlayerJoin_s", function (gameData) {
+socket.on("onPlayerConnect_s", function (gameData) {
     playersData = gameData.playersData;
     yourData = playersData[gameData.id];
 

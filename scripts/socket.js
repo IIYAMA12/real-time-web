@@ -89,34 +89,31 @@ function destroyProjectile (id) {
 }
 
 io.on("connection", function (socket) {
-    socket.on("onPlayerJoin_c", function (username) {
+    (function () {
         let id;
-
         let playerData = gameData.players.data.session.getRef(socket.id);
         if (playerData == undefined) {
             id = gameData.players.new();
 
             gameData.players.data.set(id, "socketId", socket.id, true);
 
-            gameData.players.data.set(id, "username", username);
+            // gameData.players.data.set(id, "username", username);
             
 
             playerData = gameData.players.data.get(id);
 
             gameData.players.data.session.setRef(socket.id, playerData);
         }
-        
-        // 
-        // 
-        io.sockets.to(socket.id).emit("onPlayerJoin_s", {
+
+        io.sockets.to(socket.id).emit("onPlayerConnect_s", {
             id : id,
             score: 0,
             playersData: gameData.players.data.public
         });
 
-        socket.broadcast.emit("onRemotePlayerJoin_s", gameData.players.data.get(id));
+        socket.broadcast.emit("onRemotePlayerConnect_s", gameData.players.data.get(id));
+    })();
 
-    });
 
     socket.on("onStreamOrientation_c", function (orientation) {
         
