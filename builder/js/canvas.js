@@ -234,8 +234,10 @@ const canvas = {
                         image = imageData.element;
                         
                     }
-
+                    
                     context.drawImage(image, -(imageSizeX / 2), -(imageSizeY / 2), imageSizeX, imageSizeY);
+                    
+                    
                     
                     context.rotate(-rotation);
                     context.translate(-x, -y);
@@ -243,7 +245,15 @@ const canvas = {
             }
             const mapImage = canvas.mapImage;
             if (mapImage != undefined) {
+                context.globalCompositeOperation = "source-over"; 
                 context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
+                
+                context.globalCompositeOperation = "multiply"
+                context.fillStyle = "rgb(255,255,255)";
+                context.fillRect(0, 0, canvasHeight, canvasWidth)
+                context.globalCompositeOperation = "destination-in";
+                context.drawImage(mapImage, 0, 0);
+                context.globalCompositeOperation = "source-over"; 
             }
         }
     }

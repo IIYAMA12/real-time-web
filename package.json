@@ -26,6 +26,7 @@
     "fetch": "^1.1.0",
     "ngrok": "^3.0.1",
     "node.js": "0.0.0",
+    "point-in-polygon": "^1.0.1",
     "randomstring": "^1.1.5",
     "socket.io": "^2.1.0"
   },

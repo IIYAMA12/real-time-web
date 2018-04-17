@@ -16,10 +16,11 @@ const mapImagesRequests = {
         //     }
         // }
 
-        // example image http://www.freepngimg.com/download/castle/8-2-castle-free-png-image.png
 
         // 
-        base64Img.requestBase64("https://tile.openweathermap.org/map/clouds_new/2/" + 1 + "/" + 1 + ".png?appid=e6b1633f54c4b1ebc58aef9a9ccd9b7e", function(err, res, body) {
+        // https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={api_key}
+        // https://tile.openweathermap.org/map/clouds_new/1/0/0.png?appid=e6b1633f54c4b1ebc58aef9a9ccd9b7e
+        base64Img.requestBase64("https://tile.openweathermap.org/map/clouds_new/1/0/0.png?appid=e6b1633f54c4b1ebc58aef9a9ccd9b7e", function(err, res, body) {
             mapImagesRequests.mapImage = {data: body};
         });
         
@@ -28,7 +29,7 @@ const mapImagesRequests = {
         if (mapImagesRequests.callBack != undefined) {
             mapImagesRequests.callBack(mapImagesRequests.mapImage);
         }
-    }, 4000)
+    }, 10000)
 };
 
 
