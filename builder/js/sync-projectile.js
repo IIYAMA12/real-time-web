@@ -20,7 +20,7 @@ function projectileFireRate (timeStamp) {
             velocity: {}
         }
 
-        const offset = 7;
+        const offset = 6;
 
         projectile.position.x = position.x + (Math.cos(rotOffset) * offset);
         projectile.position.y  = position.y + (Math.sin(rotOffset) * offset);

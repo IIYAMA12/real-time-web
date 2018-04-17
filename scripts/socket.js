@@ -67,8 +67,8 @@ const gameData = {
         },
         new: function () {
             const id = randomstring.generate();
-            this.data.private[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: -1}}};
-            this.data.public[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: -1}}};
+            this.data.private[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: 0}}};
+            this.data.public[id] = {id: id, score: 0, orientation: {position: {x: 50, y: 50}, rotation: 0, velocity: {x: 0, y: 0}}};
             return id;
         }
     },
@@ -114,14 +114,88 @@ io.on("connection", function (socket) {
         socket.broadcast.emit("onRemotePlayerConnect_s", gameData.players.data.get(id));
     })();
 
+    function convertToNumber (value) {
+        value = Number(value);
+        if (!isNaN(value) && value !== Infinity) {
+            return value;
+        }
+    }
 
-    socket.on("onStreamOrientation_c", function (orientation) {
+    // This function is used to save copy the client data in to the server data.
+    const orientationUpdate = {
+        execute: function (newData, data) {
+            const checkList = this.checkList;
+            for (let i = 0; i < checkList.length; i++) {
+                const check = checkList[i];
+                if (newData[check.key]) {
+                    check.func(newData, data);
+                }
+            }
+        },
+        checkList: [
+            {
+                key:"position", 
+                func: function (newData, data) {
+                    if (newData.position != undefined) {
+                        const x = convertToNumber(newData.position.x);
+                        const y = convertToNumber(newData.position.y);
+                        
+                        if (data.position == undefined) {
+                            data.position = {x: 0, y: 0};
+                        }
+
+                        if (x != undefined) {
+                            data.position.x = x;
+                        }
+                        if (y != undefined) {
+                            data.position.y = y;
+                        }
+                    }
+                }
+            },
+            {
+                key:"rotation", 
+                func: function (newData, data) {
+                    if (newData.rotation != undefined) {
+                        const value = convertToNumber(newData.rotation);
+                        if (value != undefined) {
+                            data.rotation = value;
+                        }
+                    }
+                }
+            },
+            {
+                key:"velocity", 
+                func: function (newData, data) {
+                    if (newData.velocity != undefined) {
+                        const x = convertToNumber(newData.velocity.x);
+                        const y = convertToNumber(newData.velocity.y);
+                        
+                        if (data.velocity == undefined) {
+                            data.velocity = {x: 0, y: 0};
+                        }
+
+                        if (x != undefined) {
+                            data.velocity.x = x;
+                        }
+                        if (y != undefined) {
+                            data.velocity.y = y;
+                        }
+                    }
+                }
+            }
+        ]
+    };
+
+    socket.on("onStreamOrientation_c", function (newOrientationData) {
         
         const playerData = gameData.players.data.session.getRef(socket.id);
-
+        
 
         if (playerData != undefined && playerData.id != undefined) {
-            gameData.players.data.set(playerData.id, "orientation", orientation);
+            const orientation = gameData.players.data.get(playerData.id, "orientation");
+            orientationUpdate.execute(newOrientationData, orientation);
+            // gameData.players.data.set(playerData.id, "orientation", orientation);
             socket.broadcast.emit("onStreamOrientation_s", playerData.id, orientation);
         }
     });
@@ -141,13 +215,36 @@ io.on("connection", function (socket) {
         if (playerData != undefined && playerData.id != undefined) {
             const id = randomstring.generate();
 
-            projectileData.id = id;
-            projectileData.owner = playerData.id;
-            gameData.projectiles[gameData.projectiles.length] = projectileData;
-            
-            setTimeout(destroyProjectile, 1000, id);
 
-            io.sockets.emit("onSyncProjectile_s", projectileData);
+            
+            const newProjectile = {
+                id: id,
+                owner: playerData.id,
+            };
+
+            if (projectileData.velocity) {
+                const x = convertToNumber(projectileData.velocity.x);
+                const y = convertToNumber(projectileData.velocity.y);
+                if (x != undefined && y != undefined) {
+                    newProjectile.velocity = {x: x, y: y};
+                }
+            }
+
+            if (projectileData.position) {
+                const x = convertToNumber(projectileData.position.x);
+                const y = convertToNumber(projectileData.position.y);
+                if (x != undefined && y != undefined) {
+                    newProjectile.position = {x: x, y: y};
+                }
+            }
+
+            if (newProjectile.velocity != undefined && newProjectile.position != undefined) {
+                gameData.projectiles[gameData.projectiles.length] = newProjectile;
+                
+                setTimeout(destroyProjectile, 1000, id);
+
+                io.sockets.emit("onSyncProjectile_s", newProjectile);
+            }
         }
     });
 
