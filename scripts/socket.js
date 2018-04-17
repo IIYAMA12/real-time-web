@@ -195,14 +195,14 @@ io.on("connection", function (socket) {
         if (playerData != undefined && playerData.id != undefined) {
             const orientation = gameData.players.data.get(playerData.id, "orientation");
             orientationUpdate.execute(newOrientationData, orientation);
-            // gameData.players.data.set(playerData.id, "orientation", orientation);
+
             socket.broadcast.emit("onStreamOrientation_s", playerData.id, orientation);
         }
     });
 
     socket.on("onPlayerUsernameChange_c", function (username) {
         const playerData = gameData.players.data.session.getRef(socket.id);
-        if (playerData != undefined && playerData.id != undefined) {
+        if (playerData != undefined && playerData.id != undefined && typeof(username) === "string" && username.length < 100) {
             gameData.players.data.set(playerData.id, "username", username);
             socket.broadcast.emit("onPlayerUsernameChange_s", playerData.id, username);
         }
