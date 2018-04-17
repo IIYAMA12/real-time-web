@@ -30,6 +30,7 @@ const canvas = {
 
         }
     },
+    mapImages: null,
     render: {
         image: {
             components: {
@@ -101,6 +102,12 @@ const canvas = {
 
             context.fillRect(0, 0, canvasWidth, canvasHeight);
             
+
+
+            // for (let index = 0; index < mapImages.length; index++) {
+            //     const mapImage = mapImages[index];
+            //     context.drawImage(mapImage.data, mapImage.x * (canvasWidth / 5), mapImage.y * (canvasHeight / 5), canvasWidth / 5, canvasHeight / 5);
+            // }
 
             const rocketElement = document.getElementById("rocket");
 
@@ -233,6 +240,10 @@ const canvas = {
                     context.rotate(-rotation);
                     context.translate(-x, -y);
                 }
+            }
+            const mapImage = canvas.mapImage;
+            if (mapImage != undefined) {
+                context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
             }
         }
     }

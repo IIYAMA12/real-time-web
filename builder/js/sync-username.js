@@ -7,7 +7,7 @@ socket.on("onPlayerUsernameChange_s", function (id, username) {
 
 usernameInputElement.addEventListener("input", function (e) {
     const element = e.target;
-    if (yourData != undefined) {
+    if (yourData != undefined && element.value.length < 100) {
         yourData.username = element.value;
         socket.emit("onPlayerUsernameChange_c", element.value);
     }

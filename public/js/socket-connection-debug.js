@@ -1,12 +1,14 @@
 const socket = io.connect("http://localhost:4444"); // "http://localhost:4444"
 
 
-socket.on("onPlayerConnect_s", function (gameData) {
+socket.on("onPlayerConnect_s", function (gameData, mapImages) {
     playersData = gameData.playersData;
     yourData = playersData[gameData.id];
     
     frameRender.start();
-    startStreamOrientation ()
+    startStreamOrientation ();
+
+    createMapImage(mapImages);
 });
 
 socket.on("onRemotePlayerConnect_s", function (data) {

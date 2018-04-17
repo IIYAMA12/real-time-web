@@ -4,8 +4,9 @@ const
     express = require("express"),
     bodyParser = require("body-parser"),
     session = require("express-session"),
-    minifyHTML = require("express-minify-html")
-    socket = require("./scripts/socket.js")
+    minifyHTML = require("express-minify-html"),
+    socket = require("./scripts/socket.js"),
+    fetchUrl = require("fetch").fetchUrl
 ;
 
 
@@ -33,6 +34,11 @@ app.use(minifyHTML({
 }));
 
 app.use(session(sess));
+
+
+
+
+
 
 // View engine setup
 app.set("views", path.join(__dirname, "views"));

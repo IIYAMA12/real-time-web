@@ -2,6 +2,7 @@ const socketApp = require("express")();
 const server = require("http").Server(socketApp);
 const io = require("socket.io")(server);
 const randomstring = require("randomstring");
+const mapImageRequest = require("./map-image-requests.js");
 
 server.listen(4444);
 console.log("Real-time-web socketApp listening at http://localhost:4444/");
@@ -88,6 +89,12 @@ function destroyProjectile (id) {
     io.sockets.emit("onSyncProjectileDestroy_s", id);
 }
 
+function sendMapData (mapImage) {
+    io.sockets.emit("onMapImageUpdate_s", mapImage);
+}
+
+mapImageRequest.callBack = sendMapData;
+
 io.on("connection", function (socket) {
     (function () {
         let id;
@@ -105,11 +112,14 @@ io.on("connection", function (socket) {
             gameData.players.data.session.setRef(socket.id, playerData);
         }
 
-        io.sockets.to(socket.id).emit("onPlayerConnect_s", {
-            id : id,
-            score: 0,
-            playersData: gameData.players.data.public
-        });
+        io.sockets.to(socket.id).emit("onPlayerConnect_s", 
+            {
+                id : id,
+                score: 0,
+                playersData: gameData.players.data.public
+            },
+            mapImageRequest.mapImage
+        );
 
         socket.broadcast.emit("onRemotePlayerConnect_s", gameData.players.data.get(id));
     })();
