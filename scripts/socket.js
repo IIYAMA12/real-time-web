@@ -3,6 +3,9 @@ const server = require("http").Server(socketApp);
 const io = require("socket.io")(server);
 const randomstring = require("randomstring");
 const mapImageRequest = require("./map-image-requests.js");
+const sharedsession = require("express-socket.io-session");
+
+
 
 server.listen(4444);
 console.log("Real-time-web socketApp listening at http://localhost:4444/");
@@ -96,6 +99,7 @@ function sendMapData (mapImage) {
 mapImageRequest.callBack = sendMapData;
 
 io.on("connection", function (socket) {
+    
     (function () {
         let id;
         let playerData = gameData.players.data.session.getRef(socket.id);
@@ -103,8 +107,6 @@ io.on("connection", function (socket) {
             id = gameData.players.new();
 
             gameData.players.data.set(id, "socketId", socket.id, true);
-
-            // gameData.players.data.set(id, "username", username);
             
 
             playerData = gameData.players.data.get(id);
@@ -122,6 +124,16 @@ io.on("connection", function (socket) {
         );
 
         socket.broadcast.emit("onRemotePlayerConnect_s", gameData.players.data.get(id));
+        let username = "player:" + Math.floor(Math.random() * 10000);
+
+        if (socket.handshake.session.slackUsername != undefined && typeof(socket.handshake.session.slackUsername) == "string") {
+            username = socket.handshake.session.slackUsername;
+        }
+
+        gameData.players.data.set(id, "username", username);
+
+        io.sockets.emit("onPlayerUsernameChange_s", id, username);
+        
     })();
 
     function convertToNumber (value) {
@@ -198,7 +210,6 @@ io.on("connection", function (socket) {
     };
 
     socket.on("onStreamOrientation_c", function (newOrientationData) {
-        
         const playerData = gameData.players.data.session.getRef(socket.id);
         
 
@@ -273,4 +284,15 @@ io.on("connection", function (socket) {
 
 // https://socket.io/docs/#  
 
-module.exports = socketApp;
+module.exports = function (app, session) {
+
+
+
+
+    // Use shared session middleware for socket.io
+    // setting autoSave:true
+    io.use(sharedsession(session, {
+        autoSave:true
+    })); 
+    return socketApp;
+};

@@ -2,7 +2,11 @@ const base64Img = require('base64-img')
 
 const mapImagesRequests = {
     mapImage: null,
-    timer: setInterval(function () {
+    init: function () {
+        mapImagesRequests.func();
+        mapImagesRequests.timer = setInterval(mapImagesRequests.func, 10000);
+    },
+    func: function () {
         // const mapImages = ;
         // for (let x = 0; x < 5; x++) {
         //     for (let y = 0; y < 5; y++) {
@@ -29,11 +33,10 @@ const mapImagesRequests = {
         if (mapImagesRequests.callBack != undefined) {
             mapImagesRequests.callBack(mapImagesRequests.mapImage);
         }
-    }, 10000)
+    }
 };
 
-
-
+mapImagesRequests.init();
 
 
 module.exports = mapImagesRequests;

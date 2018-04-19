@@ -18,10 +18,8 @@ function createMapImage (mapImage) {
         
         // console.log("update1", typeof(mapImage), mapImage);
         image.addEventListener("load", function() {
-            console.log("update2", this);
             image.crossOrigin = 'Anonymous';
             canvas.mapImage = image;
-            
         });
     
     }

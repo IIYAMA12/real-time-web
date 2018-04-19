@@ -3,6 +3,31 @@ const projectiles = [];
 
 function updateProjectilePosition (timeStamp, timeslice) {
     const speedFactor = timeslice / 17;
+
+
+    for (let i = 0; i < projectiles.length; i++) {
+        const projectileData = projectiles[i];
+
+        const position = projectileData.position;
+        const velocity = projectileData.velocity;
+        
+        projectileData.position.x += projectileData.velocity.x * speedFactor;
+        projectileData.position.y += projectileData.velocity.y * speedFactor;
+
+        if (projectileData.owner != yourData.id) {
+            const localPlayerPosition = yourData.orientation.position;
+
+            const a = localPlayerPosition.x - position.x;
+            const b = localPlayerPosition.y - position.y;
+
+            const distance = Math.sqrt( a*a + b*b );
+            // https://stackoverflow.com/questions/20916953/get-distance-between-two-points-in-canvas
+
+            if (distance < 4) { // default: 4
+                yourData.orientation.position = {x: 50, y: 50};
+            }
+        }
+    }
 }
 
 let nextProjectileFireTime = 0;

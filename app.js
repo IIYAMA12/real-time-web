@@ -3,22 +3,23 @@ const
     path = require("path"),
     express = require("express"),
     bodyParser = require("body-parser"),
-    session = require("express-session"),
     minifyHTML = require("express-minify-html"),
-    socket = require("./scripts/socket.js"),
     fetchUrl = require("fetch").fetchUrl
 ;
 
 
-const sess = {
+const session = require("express-session")({
     secret: "gfjisdhu5yvdist4fvhsdyutg47sydiywe45iadhwo8",
-    cookie: {},
     resave: true,
     saveUninitialized: true
-}
+});
+
+
 
 
 const app = express();
+
+app.use(session);
 
 app.use(minifyHTML({
     override:      true,
@@ -33,11 +34,10 @@ app.use(minifyHTML({
     }
 }));
 
-app.use(session(sess));
 
+ 
 
-
-
+const socket = require("./scripts/socket.js")(app, session);
 
 
 // View engine setup
@@ -52,11 +52,13 @@ app.use(express.static("public"));
 
 
 app.get("*", function(req, res, next)    {
+    res.locals.dataContainer = {};
     next();
 });
 
 
 app.get("/", function(req, res, next)    {
+    res.locals.dataContainer.slackUserName = req.session.slackUserName;
     res.render("pages/index")
 });
 
@@ -74,12 +76,10 @@ const routers = {
     },
     path: "./routers",
     allData: [
-        /*
-            {
-                path: "/api",
-                fileName: "example"
-            }
-        */
+        {
+            path: "",
+            fileName: "slack"
+        }
     ]
 };
 routers.init();

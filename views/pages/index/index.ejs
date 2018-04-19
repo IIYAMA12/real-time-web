@@ -15,26 +15,40 @@
             <img src="img/rocket.png" id="rocket">
             <form>
                 <label for="username">Username:</label>
-                <input type="text" id="username" maxlength="40">
-            </form>
+                <input type="text" id="username" maxlength="40" value="<%= dataContainer.slackUserName %>">
+            </form> 
         </div>
+        <a href="https://slack.com/oauth/authorize?client_id=349357647332.350639213591&scope=identity.basic">Login with slack</a>
     </main>
-    <script src="js/utility.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
     
-    <script src="js/socket-connection-debug.js"></script>
+    <% 
+        var debugScripts = true; 
+        var debugFilePart = "";
+        if (debugScripts) {
+            debugFilePart = "-debug";
+        }
+    %>
 
-    <script src="js/frame-render.js"></script>
-
-    <script src="js/controller.js"></script>
-
-    <script src="js/player-data-debug.js"></script>
-    <script src="js/sync-username-debug.js"></script>
     
-    <script src="js/stream-orientation-debug.js"></script>
-    <script src="js/canvas-debug.js"></script>
-    <script src="js/sync-projectile.js"></script>
-    <script src="js/map-images.js"></script>
+
+    
+   
+    <script src="js/utility<%=debugFilePart%>.js"></script>
+    <script src="js/socket-connection<%=debugFilePart%>.js"></script>
+
+    <script src="js/frame-render<%=debugFilePart%>.js"></script>
+
+    <script src="js/controller<%=debugFilePart%>.js"></script>
+
+    <script src="js/player-data<%=debugFilePart%>.js"></script>
+    <script src="js/username<%=debugFilePart%>.js"></script>
+    
+    <script src="js/orientation<%=debugFilePart%>.js"></script>
+    <script src="js/canvas<%=debugFilePart%>.js"></script>
+    <script src="js/projectile<%=debugFilePart%>.js"></script>
+    <script src="js/map-images<%=debugFilePart%>.js"></script>
 </body>
 </html>
 

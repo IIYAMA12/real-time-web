@@ -128,29 +128,11 @@ const canvas = {
                 const projectileData = projectiles[i];
 
                 const position = projectileData.position;
-                const velocity = projectileData.velocity;
-                
-                projectileData.position.x += projectileData.velocity.x * speedFactor;
-                projectileData.position.y += projectileData.velocity.y * speedFactor;
 
                 context.beginPath();
                 context.arc(position.x / 100 * (canvasWidth - sideOffset * 0.8) + sideOffset * 0.4, position.y / 100 * (canvasHeight - sideOffset * 0.8) + sideOffset * 0.4, 3 * scaleFactor, 0, 2 * Math.PI);
                 context.fillStyle = "red";
                 context.fill();
-
-                if (projectileData.owner != yourData.id) {
-                    const localPlayerPosition = yourData.orientation.position;
-
-                    const a = localPlayerPosition.x - position.x;
-                    const b = localPlayerPosition.y - position.y;
-
-                    const distance = Math.sqrt( a*a + b*b );
-                    // https://stackoverflow.com/questions/20916953/get-distance-between-two-points-in-canvas
-
-                    if (distance < 4) { // default: 4
-                        yourData.orientation.position = {x: 50, y: 50};
-                    }
-                }
             }
 
             for (const id in playersData) {
@@ -251,16 +233,9 @@ const canvas = {
             }
             const mapImage = canvas.mapImage;
             if (mapImage != undefined) {
-                context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
-                // context.globalCompositeOperation = "source-over"; 
-                // context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
-                
-                // context.globalCompositeOperation = "multiply"
-                // context.fillStyle = "rgb(255,255,255)";
-                // context.fillRect(0, 0, canvasHeight, canvasWidth)
-                // context.globalCompositeOperation = "destination-in";
-                // context.drawImage(mapImage, 0, 0);
-                // context.globalCompositeOperation = "source-over"; 
+                for (let index = 0; index < 2; index++) {
+                    context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
+                }
             }
         }
     }
