@@ -10,15 +10,14 @@
 </head>
 <body>
     <main>
-        <div>
-            <div id="map-images"></div>
+        <div class="game-interface-wrapper">
             <canvas height="1000" width="1000"></canvas>
+            <img src="img/rocket.png" id="rocket">
+            <form>
+                <label for="username">Username:</label>
+                <input type="text" id="username" maxlength="40">
+            </form>
         </div>
-        <img src="img/rocket.png" id="rocket">
-        <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" maxlength="40">
-        </form>
     </main>
     <script src="js/utility.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>

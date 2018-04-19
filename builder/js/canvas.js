@@ -94,6 +94,10 @@ const canvas = {
                 canvasHeight = canvasElement.height
             ;
 
+            const scaleFactor = Math.min(canvasWidth / 1000);
+
+            const sideOffset = 100 * scaleFactor;
+
             const context = canvasElement.getContext('2d');
             context.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -130,7 +134,7 @@ const canvas = {
                 projectileData.position.y += projectileData.velocity.y * speedFactor;
 
                 context.beginPath();
-                context.arc(position.x / 100 * (canvasWidth - 80) + 40, position.y / 100 * (canvasHeight - 80) + 40, 3, 0, 2 * Math.PI);
+                context.arc(position.x / 100 * (canvasWidth - sideOffset * 0.8) + sideOffset * 0.4, position.y / 100 * (canvasHeight - sideOffset * 0.8) + sideOffset * 0.4, 3 * scaleFactor, 0, 2 * Math.PI);
                 context.fillStyle = "red";
                 context.fill();
 
@@ -188,14 +192,16 @@ const canvas = {
                     
 
                     const 
-                        imageSizeX = 50 * rocketScale, 
-                        imageSizeY = 150 * rocketScale
+                        imageSizeX = 50 * rocketScale * scaleFactor, 
+                        imageSizeY = 150 * rocketScale * scaleFactor
                     ;
 
                     const 
-                        x = position.x / 100 * (canvasWidth - 80) + 40, 
-                        y = position.y / 100 * (canvasHeight - 80)  + 40
+                        x = position.x / 100 * (canvasWidth - sideOffset * 0.8) + sideOffset * 0.4, 
+                        y = position.y / 100 * (canvasHeight - sideOffset * 0.8)  + sideOffset * 0.4
                     ;
+                    
+                    
                     
 
                     rotation *= Math.PI / 180;
@@ -207,7 +213,7 @@ const canvas = {
                     
                     if (playerData.username != undefined) {
                         context.fillStyle = "black";
-                        context.fillText(playerData.username, 0, -50); //
+                        context.fillText(playerData.username, 0, -50 * scaleFactor); //
                     }
 
 
@@ -245,19 +251,39 @@ const canvas = {
             }
             const mapImage = canvas.mapImage;
             if (mapImage != undefined) {
-                context.globalCompositeOperation = "source-over"; 
                 context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
+                // context.globalCompositeOperation = "source-over"; 
+                // context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
                 
-                context.globalCompositeOperation = "multiply"
-                context.fillStyle = "rgb(255,255,255)";
-                context.fillRect(0, 0, canvasHeight, canvasWidth)
-                context.globalCompositeOperation = "destination-in";
-                context.drawImage(mapImage, 0, 0);
-                context.globalCompositeOperation = "source-over"; 
+                // context.globalCompositeOperation = "multiply"
+                // context.fillStyle = "rgb(255,255,255)";
+                // context.fillRect(0, 0, canvasHeight, canvasWidth)
+                // context.globalCompositeOperation = "destination-in";
+                // context.drawImage(mapImage, 0, 0);
+                // context.globalCompositeOperation = "source-over"; 
             }
         }
     }
 };
 window.addEventListener("load", function () {
     canvas.init();
+    const canvasElement = document.getElementsByTagName("canvas")[0];
+    (function() {
+        const gameInterfaceWrapper = canvasElement.parentElement;
+        if (gameInterfaceWrapper != undefined) {
+            const boundingBox = gameInterfaceWrapper.getBoundingClientRect();
+            
+            canvasElement.width = boundingBox.width;
+            canvasElement.height = boundingBox.width;
+        }
+    })();
+    window.addEventListener("resize", function () {
+        const gameInterfaceWrapper = canvasElement.parentElement;
+        if (gameInterfaceWrapper != undefined) {
+            const boundingBox = gameInterfaceWrapper.getBoundingClientRect();
+            
+            canvasElement.width = boundingBox.width;
+            canvasElement.height = boundingBox.width;
+        }
+    });
 });

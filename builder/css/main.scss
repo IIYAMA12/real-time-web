@@ -11,6 +11,7 @@ img {
 main {
     display: block;
     flex-wrap: wrap;
+    width: 100vw;
     > * {
         flex-grow: 0;
         flex-shrink: 0;
@@ -23,7 +24,7 @@ canvas {
 }
 
 form {
-    width: 1000px;
+    width: 100%;
     background: black;
     display: flex;
     flex-wrap: nowrap;
@@ -39,4 +40,11 @@ form {
         margin-right: 1.5rem;
         color: inherit;
     }
+    height: 3rem;
+}
+
+.game-interface-wrapper {
+    width: calc(100vmin - 3rem);
+    height: 100vh;
+    margin: auto;
 }
