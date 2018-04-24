@@ -9,12 +9,24 @@ window.addEventListener("load", function () {
         playersData = gameData.playersData;
         yourData = playersData[gameData.id];
         
+        /*
+            Start rendering
+        */
         frameRender.start();
 
+        /*
+            Yeah! We can start streaming
+        */
         startStreamOrientation ();
-    
+        
+        /*
+            if there is a mapImage, we can render the mapImage.
+        */
         createMapImage(mapImages);
 
+        /*
+            prepare the controls
+        */
         controller.init();
 
         socket.on("onRemotePlayerConnect_s", function (data) {
@@ -26,52 +38,64 @@ window.addEventListener("load", function () {
             delete playersData[id];
         });
         
-        
+        /*
+            Tell the listeners that they can attach to the socket
+        */
         attachSocketForUsername();
         attachSocketForOrientation();
         attachSocketForProjectile();
         attachSocketForMapImage();
     });
 
+    /*
+        Reconnected? Server sends you the updated data.
+    */
     socket.on("onPlayerReconnect_s", function (gameData, mapImages) {
         playersData = gameData.playersData;
         yourData = playersData[gameData.id];
-        connectionError = false;
     });
     
     socket.on("connect_timeout", function(){
-        console.log("connection timeout");
+        // todo
     });
 
-    // Tunneling counter
+    /*
+        We are in a TUNNEL! WHY? OW? WHY? HOW?
+    */
     socket.on("connect_error", function(){
         connectionError = true;
-        console.log("connect_error");
     });
 
+    /*
+        We are back!
+    */
     socket.on("reconnect", function () {
         socket.emit("onPlayerReconnect_c");
-        // console.log("reconnect");
+        connectionError = false;
     });
 
+    /*
+        A remote player has connection problems!
+    */
     socket.on("onRemotePlayerReconnect_s", function (id) {
-        console.log("onRemotePlayerReconnect_s", id);
+        
         const playerData = playersData[id];
+        console.log("onRemotePlayerReconnect_s", playerData);
         if (playerData != undefined) {
-            console.log("remove connection error")
-            delete playerData.connectError;
+            delete playerData.connectionError;
         }
     });
 
     socket.on("onRemotePlayerConnectionError_s", function (id) {
-        console.log("onRemotePlayerConnectionError_s", id);
         const playerData = playersData[id];
         if (playerData != undefined) {
-            console.log("set connection error")
             playerData.connectionError = true;
         }
     });
 
+    /*
+        Ping to the server, so that the server knows that we are still alive.
+    */
     socket.on("ping", function () {
         socket.emit("ping_c");
     });

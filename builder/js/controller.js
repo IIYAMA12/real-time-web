@@ -1,3 +1,6 @@
+/*
+    This object lets you control the spaceship. >> Rotate and shoot. <<
+*/
 const controller = {
     init: function () {
         document.addEventListener("keydown", this.eventFunctions.keyStateChange);

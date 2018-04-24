@@ -1,3 +1,6 @@
+/*
+    This function is called every frame and will change the localPlayer rocket rotation while holding the left or right arrows
+*/
 function updatePlayerRotation (timeStamp, timeslice) {
     if (!connectionError) {
         const speedFactor = timeslice / 17;
@@ -17,25 +20,25 @@ function updatePlayerRotation (timeStamp, timeslice) {
 const canvas = {
     init: function () {
 
+        /*
+            These are functions you want to run every frame.
+        */
         frameRender.attachFunction(updatePlayerRotation);
         frameRender.attachFunction(updateProjectilePosition);
 
         frameRender.attachFunction(projectileFireRate);
-
         frameRender.attachFunction(canvas.render.func);
         
         
 
     },
-    collision: {
-        check: function () {
-
-        }
-    },
     mapImages: null,
     render: {
         image: {
             components: {
+                /*
+                    These are images that will be rendered in the canvas. If applied more images, it can become an animation.
+                */
                 ship: {
                     name: "rocket-frame",
                     friendlyName: "rocket",
@@ -61,7 +64,13 @@ const canvas = {
                     elements: []
                 }
             },
+            /*
+                Request the image elements.
+            */
             request: {
+                /*
+                    request next image frame
+                */
                 frame: function (componentName) {
                     const component = canvas.render.image.components[componentName];
                     if (component) {
@@ -79,6 +88,9 @@ const canvas = {
                         return frameData.current;
                     }
                 },
+                /*
+                    Get a component.
+                */
                 componentElement: function (componentName, frame) {
                     const component = canvas.render.image.components[componentName];
                     if (component) {
@@ -98,46 +110,74 @@ const canvas = {
             }
         },
         func: function (timeStamp, timeslice) {
+            /* 
+                Calculate the speed factor. This will make sure that the speed of the elements/animations are 99% the same on every device.
+            */
             const speedFactor = timeslice / 17;
 
-
+            /*
+                Get the canvas element
+            */
             const canvasElement = document.getElementsByTagName("canvas")[0];
 
+            /*
+                get the canvas size
+            */
             const 
                 canvasWidth = canvasElement.width,
                 canvasHeight = canvasElement.height
             ;
 
+
+            /*
+                This scale factor will make sure every thing is scaled based on the client his resolution
+            */
             const scaleFactor = Math.min(canvasWidth / 1000);
 
+            /*
+                Define the offsets from the sides of the canvas
+            */
             const sideOffset = 100 * scaleFactor;
 
+
+            /*
+                Get the canvas context
+            */
             const context = canvasElement.getContext('2d');
+
+
+            /*
+                clear the context
+            */
             context.clearRect(0, 0, canvasWidth, canvasHeight);
 
+            /*
+                Give the context a background color
+            */
             context.fillStyle = "rgb(230,230,230)";
-
-
             context.fillRect(0, 0, canvasWidth, canvasHeight);
             
 
-
-            // for (let index = 0; index < mapImages.length; index++) {
-            //     const mapImage = mapImages[index];
-            //     context.drawImage(mapImage.data, mapImage.x * (canvasWidth / 5), mapImage.y * (canvasHeight / 5), canvasWidth / 5, canvasHeight / 5);
-            // }
-
+            /*
+                This is the default rocket element, which is used as fallback.
+            */
             const rocketElement = document.getElementById("rocket");
 
-            
+            /*
+                reset the rotation of the canvas just incase.
+            */
             context.rotate(0);
-            context.textAlign="center"; 
-            context.font="20px Georgia";
 
-            const rocketScale = 0.5;
 
+            /*
+                Get the image request object. Which is used to render images and animations.
+            */
             const imageRequests = canvas.render.image.request;
 
+
+            /*
+                Render the projectiles
+            */
             for (let i = 0; i < projectiles.length; i++) {
                 const projectileData = projectiles[i];
 
@@ -149,6 +189,19 @@ const canvas = {
                 context.fill();
             }
 
+            const rocketScale = 0.5;
+
+            /*
+                define the font settings for the player labels
+            */
+           context.textAlign="center"; 
+           context.font="20px Georgia";
+
+
+            /*
+                Go through all players and draw the ship and the username
+            */
+
             for (const id in playersData) {
                 
                 const playerData = playersData[id];
@@ -157,15 +210,26 @@ const canvas = {
                     const position = playerData.orientation.position;
 
 
-                    const velocity = playerData.orientation.velocity;
+                    
 
                     let rotation = playerData.orientation.rotation;
+
+                    /*
+                        Players can only update their position if they are connected
+                    */
                     if (!connectionError) {
                         
+                        // Enable this if you want to use velocity behaviours //
+                        /*
+                            const velocity = playerData.orientation.velocity;
+                            position.x += velocity.x * speedFactor * 0.2;
+                            position.y += velocity.y * speedFactor * 0.2;
+                        */
 
-                        // position.x += velocity.x * speedFactor * 0.2;
-                        // position.y += velocity.y * speedFactor * 0.2;
 
+                        /*
+                            Calculate the player his position
+                        */
                         const rotOffset =  ((rotation - 90) * 3.141592653 * 2)/360;
                                 
                         const offset = speedFactor * 0.2;
@@ -219,7 +283,7 @@ const canvas = {
 
                     context.rotate(rotation);
 
-                    // Laser sign
+                    // Laser sign, -- experimental --
                     /*
                         context.beginPath();
                         context.moveTo(0,0);
@@ -228,7 +292,9 @@ const canvas = {
                         context.stroke();
                     */
                     
-
+                    /*
+                        Get the animation frame (image)
+                    */
                     const frame = imageRequests.frame("ship");
                     const imageData = imageRequests.componentElement("ship", frame);
 
@@ -239,14 +305,22 @@ const canvas = {
                         
                     }
                     
+                    /*
+                        draw the ship
+                    */
                     context.drawImage(image, -(imageSizeX / 2), -(imageSizeY / 2), imageSizeX, imageSizeY);
                     
                     
-                    
+                    /*
+                        Reset the context
+                    */
                     context.rotate(-rotation);
                     context.translate(-x, -y);
                 }
             }
+            /*
+                Draw the cloud images from openweather api
+            */
             const mapImage = canvas.mapImage;
             if (mapImage != undefined) {
                 for (let index = 0; index < 2; index++) {
@@ -254,6 +328,9 @@ const canvas = {
                 }
             }
 
+            /*
+                If players have connection timeouts, render a warning image.
+            */
             for (const id in playersData) {
                 
                 const playerData = playersData[id];
@@ -267,20 +344,47 @@ const canvas = {
                                 x = position.x / 100 * (canvasWidth - sideOffset * 0.8) + sideOffset * 0.4, 
                                 y = position.y / 100 * (canvasHeight - sideOffset * 0.8)  + sideOffset * 0.4
                             ;
-                    
-        
                             context.translate(x, y);
                             const imageSize = 50 * scaleFactor;
                             context.drawImage(imageData.element, -(imageSize / 2), -(imageSize / 2), imageSize, imageSize);
-                            
                             context.translate(-x, -y);
                         }
                     }
                 }
             }
+
+            /*
+                If the localPlayer has connection problems, render a connection error image with the text: "Connection error".
+            */
+            if (connectionError) {
+
+                const imageData = imageRequests.componentElement("connectionError", 1);
+                if (imageData != undefined) {
+                    const imageSize = 300 * scaleFactor 
+                    const 
+                        offsetX = canvasWidth / 2,
+                        offsetY = canvasHeight / 2
+                    ;
+                    context.translate(offsetX, offsetY);
+                    
+                    context.textAlign="center"; 
+                    context.font="20px Georgia";
+
+                    context.drawImage(imageData.element, -(imageSize / 2), -(imageSize / 2), imageSize, imageSize);
+
+                    context.fillStyle = "red";
+                    context.fillText("Connection error", 0, imageSize / 2 + 20 * scaleFactor);
+
+                    context.translate(-offsetX, -offsetY);
+                }
+            }
         }
     }
 };
+
+/*
+    When the window has been loaded make the canvas resize able
+*/ 
 window.addEventListener("load", function () {
     canvas.init();
     const canvasElement = document.getElementsByTagName("canvas")[0];
