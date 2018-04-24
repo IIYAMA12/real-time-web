@@ -1,11 +1,13 @@
 function updatePlayerRotation (timeStamp, timeslice) {
-    const speedFactor = timeslice / 17;
-    const keyState = controller.keyState;
-    if ((keyState.left || keyState.right) && !(keyState.left && keyState.right)) {
-        if (keyState.left) {
-            yourData.orientation.rotation -= speedFactor * 2;
-        } else {
-            yourData.orientation.rotation += speedFactor * 2;
+    if (!connectionError) {
+        const speedFactor = timeslice / 17;
+        const keyState = controller.keyState;
+        if ((keyState.left || keyState.right) && !(keyState.left && keyState.right)) {
+            if (keyState.left) {
+                yourData.orientation.rotation -= speedFactor * 2;
+            } else {
+                yourData.orientation.rotation += speedFactor * 2;
+            }
         }
     }
 }
@@ -42,6 +44,18 @@ const canvas = {
                         current: 1,
                         max: 3,
                         delay: 300,
+                        nextTime: 0
+                    },
+                    elements: []
+                },
+                connectionError: {
+                    name: "connection-error",
+                    friendlyName: "connection error",
+                    extension: "png",
+                    frame: {
+                        current: 1,
+                        max: 1,
+                        delay: 0,
                         nextTime: 0
                     },
                     elements: []
@@ -146,31 +160,33 @@ const canvas = {
                     const velocity = playerData.orientation.velocity;
 
                     let rotation = playerData.orientation.rotation;
+                    if (!connectionError) {
+                        
 
-                    // position.x += velocity.x * speedFactor * 0.2;
-                    // position.y += velocity.y * speedFactor * 0.2;
+                        // position.x += velocity.x * speedFactor * 0.2;
+                        // position.y += velocity.y * speedFactor * 0.2;
 
-                    const rotOffset =  ((rotation - 90) * 3.141592653 * 2)/360;
-                            
-                    const offset = speedFactor * 0.2;
+                        const rotOffset =  ((rotation - 90) * 3.141592653 * 2)/360;
+                                
+                        const offset = speedFactor * 0.2;
 
-                    
-                    position.x += Math.cos(rotOffset) * offset;
-                    position.y += Math.sin(rotOffset) * offset;
-                    
+                        
+                        position.x += Math.cos(rotOffset) * offset;
+                        position.y += Math.sin(rotOffset) * offset;
+                        
 
-                    if (position.x > 100) {
-                        position.x = 100;
-                    } else if (position.x < 0) {
-                        position.x = 0;
+                        if (position.x > 100) {
+                            position.x = 100;
+                        } else if (position.x < 0) {
+                            position.x = 0;
+                        }
+
+                        if (position.y > 100) {
+                            position.y = 100;
+                        } else if (position.y < 0) {
+                            position.y = 0;
+                        }
                     }
-
-                    if (position.y > 100) {
-                        position.y = 100;
-                    } else if (position.y < 0) {
-                        position.y = 0;
-                    }
-
                     
 
                     const 
@@ -235,6 +251,31 @@ const canvas = {
             if (mapImage != undefined) {
                 for (let index = 0; index < 2; index++) {
                     context.drawImage(mapImage, 0, 0, canvasHeight, canvasWidth);
+                }
+            }
+
+            for (const id in playersData) {
+                
+                const playerData = playersData[id];
+                
+                if (playerData.orientation != undefined) {
+                    const position = playerData.orientation.position;
+                    if (playerData.connectionError) {
+                        const imageData = imageRequests.componentElement("connectionError", 1);
+                        if (imageData.loaded) {
+                            const 
+                                x = position.x / 100 * (canvasWidth - sideOffset * 0.8) + sideOffset * 0.4, 
+                                y = position.y / 100 * (canvasHeight - sideOffset * 0.8)  + sideOffset * 0.4
+                            ;
+                    
+        
+                            context.translate(x, y);
+                            const imageSize = 50 * scaleFactor;
+                            context.drawImage(imageData.element, -(imageSize / 2), -(imageSize / 2), imageSize, imageSize);
+                            
+                            context.translate(-x, -y);
+                        }
+                    }
                 }
             }
         }

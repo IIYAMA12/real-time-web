@@ -37,7 +37,8 @@ function createMapImage (mapImage) {
     // }
 }
 
-
-socket.on("onMapImageUpdate_s", function (mapImage) {
-    createMapImage (mapImage);
-});
+function attachSocketForMapImage () {
+    socket.on("onMapImageUpdate_s", function (mapImage) {
+        createMapImage (mapImage);
+    });
+}

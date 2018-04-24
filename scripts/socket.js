@@ -1,6 +1,9 @@
 const socketApp = require("express")();
 const server = require("http").Server(socketApp);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, {
+    pingInterval: 1500,
+    pingTimeout: 30000,
+});
 const randomstring = require("randomstring");
 const mapImageRequest = require("./map-image-requests.js");
 const sharedsession = require("express-socket.io-session");
@@ -23,11 +26,21 @@ const gameData = {
     
             },
             set: function (id, key, data, privateData) {
-                if (!privateData) {
-                    this.public[id][key] = data;
+                if (this.public[id]) {
+                    if (!privateData) {
+                        if (data === null) {
+                            delete this.public[id][key];
+                        } else {
+                            this.public[id][key] = data;
+                        }
+                    }
+                    if (data === null) {
+                        delete  this.private[id][key];
+                    } else {
+                        this.private[id][key] = data;
+                    }
+                    return true;
                 }
-                this.private[id][key] = data;
-                return true;
             },
             get: function (id, key, privateData) {
                 if (this.private[id] != undefined) {
@@ -126,6 +139,8 @@ io.on("connection", function (socket) {
         socket.broadcast.emit("onRemotePlayerConnect_s", gameData.players.data.get(id));
         let username = "player:" + Math.floor(Math.random() * 10000);
 
+        console.log("socket.handshake.session.slackUsername", socket.handshake.session.slackUsername);
+        console.log(socket.handshake.session);
         if (socket.handshake.session.slackUsername != undefined && typeof(socket.handshake.session.slackUsername) == "string") {
             username = socket.handshake.session.slackUsername;
         }
@@ -158,7 +173,7 @@ io.on("connection", function (socket) {
             {
                 key:"position", 
                 func: function (newData, data) {
-                    if (newData.position != undefined) {
+                    if (newData.position != undefined && data != undefined) {
                         const x = convertToNumber(newData.position.x);
                         const y = convertToNumber(newData.position.y);
                         
@@ -178,7 +193,7 @@ io.on("connection", function (socket) {
             {
                 key:"rotation", 
                 func: function (newData, data) {
-                    if (newData.rotation != undefined) {
+                    if (newData.rotation != undefined && data != undefined) {
                         const value = convertToNumber(newData.rotation);
                         if (value != undefined) {
                             data.rotation = value;
@@ -189,7 +204,7 @@ io.on("connection", function (socket) {
             {
                 key:"velocity", 
                 func: function (newData, data) {
-                    if (newData.velocity != undefined) {
+                    if (newData.velocity != undefined && data != undefined) {
                         const x = convertToNumber(newData.velocity.x);
                         const y = convertToNumber(newData.velocity.y);
                         
@@ -274,23 +289,63 @@ io.on("connection", function (socket) {
     socket.on("disconnect", function () {        
         const playerData = gameData.players.data.session.getRef(socket.id);
 
-        if (playerData) {
+        if (playerData != undefined) {
             socket.broadcast.emit("onPlayerDisconnect_s", playerData.id);
         }
         gameData.players.data.session.disconnect(socket.id);
+        console.log("diconnect");
+    });
+
+    socket.on("onPlayerReconnect_c", function () {
+        console.log("reconnect");
+        const playerData = gameData.players.data.session.getRef(socket.id);
+        if (playerData != undefined) {
+            
+            gameData.players.data.set(playerData.id, "connectionError", null);
+
+            io.sockets.to(socket.id).emit("onPlayerReconnect_s", 
+                {
+                    id : playerData.id,
+                    score: 0,
+                    playersData: gameData.players.data.public
+                },
+                mapImageRequest.mapImage
+            );
+            socket.broadcast.emit("onRemotePlayerReconnect_s", playerData.id);
+        }
+    });
+
+    socket.on("ping_c", function () {
+        const playerData = gameData.players.data.session.getRef(socket.id);
+        if (playerData != undefined) {
+            gameData.players.data.set(playerData.id, "lastPingTime", new Date().getTime(), true);
+        }
     });
 });
-      
+
+setInterval(function () {
+    const timeNow = new Date().getTime();
+    for (const playerId in gameData.players.data.private) {
+        const playerPrivateData = gameData.players.data.private[playerId];
+        if (playerPrivateData != undefined) {
+            const lastPingTime = playerPrivateData.lastPingTime;
+            if (timeNow > lastPingTime + 2500) {
+                if (!playerPrivateData.connectionError) {
+                    gameData.players.data.set(playerPrivateData.id, "connectionError", true);
+                    
+                    io.sockets.emit("onRemotePlayerConnectionError_s", playerPrivateData.id);
+                }
+            } else if (playerPrivateData.connectionError) {
+                delete playerPrivateData.connectionError;
+                io.sockets.emit("onRemotePlayerReconnect_s", playerPrivateData.id);
+            }
+        }
+    }
+}, 1000);
 
 // https://socket.io/docs/#  
 
 module.exports = function (app, session) {
-
-
-
-
-    // Use shared session middleware for socket.io
-    // setting autoSave:true
     io.use(sharedsession(session, {
         autoSave:true
     })); 
