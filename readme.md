@@ -21,6 +21,9 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 - [Todo](#todo)
 
 
+## Communication
+
+![Communication between all parties](readme-content/flow-app.png)
 
 ## Interaction
 
@@ -202,9 +205,7 @@ Receive a trigger event on serverside. server `> client`.
 
 ## Socket events used
 
---- ; --------------- ; ---
---- MORE is COMING SOON ---
---- ; --------------- ; ---
+
 
 
 ## Todo
@@ -214,3 +215,4 @@ Receive a trigger event on serverside. server `> client`.
 - [X] Clean up disconnected remote players.
 - [ ] Collision detection
 - [ ] Fix no focus on browser tab, which causes the animation frame to stop. This will cause desync, because the player spaceship animation goes on by the remote players.
+- [ ] Slack API fix session bug.
