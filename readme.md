@@ -18,8 +18,8 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 - [Start the server!](#start-the-server)
 - [Socket](#socket)
 - [Socket communication events used](#socket-communication-events-used)
-- [Other communications](other-communications)
-- [Which data is available where?](which-data-is-available-where)
+- [Other communications](#other-communications)
+- [Which data is available where?](#which-data-is-available-where)
 - [Todo](#todo)
 
 
