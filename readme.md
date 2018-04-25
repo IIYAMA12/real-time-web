@@ -10,14 +10,16 @@ Version 1.0.0
 This web app lets you fly with your spaceship inside of an area. Every remote player that joins the website owns his own ship and will be streaming it's orientation to you.
 
 
-## Navigation
+## Table of contents
 
 - [Interaction](#interaction)
 - [Express + sockets, which ports do I have to open?](#express--sockets-which-ports-do-i-have-to-open)
 - [Expose when hosting on localhost](#expose-when-hosting-on-localhost)
 - [Start the server!](#start-the-server)
 - [Socket](#socket)
-- [Socket events used](#socket-events-used)
+- [Socket communication events used](#socket-communication-events-used)
+- [Other communications](other-communications)
+- [Which data is available where?](which-data-is-available-where)
 - [Todo](#todo)
 
 
@@ -217,6 +219,8 @@ Receive a trigger event on serverside. server `> client`.
 "onSyncProjectile_c"
 ```
 
+`_c` = client-side.
+
 ### Client-side events 
 
 #### Build in
@@ -245,6 +249,8 @@ Receive a trigger event on serverside. server `> client`.
 // experimental
 "onPlayerConnect_s" 
 ```
+
+`_s` = server-side.
 
 ## Other communications
 
@@ -294,7 +300,7 @@ router.get("/oauth", function (req, res, next) {
             */
             req.session.slackAccessToken = data.access_token;
             req.session.slackUsername = data.user.name;
-            
+
             res.redirect("/");
         }
     });
