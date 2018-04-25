@@ -1,0 +1,1 @@
+function attachSocketForOrientation(){socket.on("onStreamOrientation_s",function(t,n){void 0!=playersData[t]&&(playersData[t].orientation=n)})}function startStreamOrientation(){setInterval(function(){connectionError||socket.emit("onStreamOrientation_c",yourData.orientation)},100)}

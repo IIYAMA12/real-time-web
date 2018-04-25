@@ -1,10 +1,22 @@
+/*
+    This code lets you use requestAnimationFrame and bound callback functions to it.
+*/
+
 const frameRender = {
     attachedFunctions: [
 
     ],
+
+    /*
+        With this method you can add callback functions, which will be called every frame.
+    */
     attachFunction: function (func) {
         frameRender.attachedFunctions[frameRender.attachedFunctions.length] = func;
     },
+
+    /* 
+        This function will be called every frame, once it is started with the method 'start'   
+    */
     func: function (timeStamp) {
 
         let timeSlice;
@@ -26,6 +38,9 @@ const frameRender = {
             }
         }
     },
+    /*
+        Start rendering
+    */
     start: function () {
         if (this.animationFrameRequest == undefined) {
 
@@ -36,6 +51,9 @@ const frameRender = {
             }
         }
     },
+    /*
+        Stop rendering
+    */
     stop: function () {
         if (this.animationFrameRequest != undefined) {
             window.cancelAnimationFrame(this.animationFrameRequest);
