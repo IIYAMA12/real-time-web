@@ -449,9 +449,9 @@ Check every second, if a client his/her last ping time hasn't been updated for 5
 
 <details>
     <summary>Visual representation</summary>
-    <img src="https://github.com/IIYAMA12/real-time-web/tree/development/readme-content/time-out-remote-player.png" alt="time out remote player">
+    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-remote-player.png" alt="time out remote player">
     <p>A remote player has timed out</p>
-    <img src="https://github.com/IIYAMA12/real-time-web/tree/development/readme-content/time-out-local-player.png" alt="time out localPlayer">
+    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-local-player.png" alt="time out localPlayer">
     <p>The localPlayer has timed out</p>
 </details>
 
