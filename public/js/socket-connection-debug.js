@@ -3,7 +3,9 @@ let connectionError = false;
 
 
 window.addEventListener("load", function () {
-    socket = io.connect("http://62d0a5be.ngrok.io"); // "http://localhost:4444"
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host.split(":")[0];
+    socket = io.connect(baseUrl + ":4444"); // "http://localhost:4444"
 
     socket.on("onPlayerConnect_s", function (gameData, mapImages) {
         playersData = gameData.playersData;

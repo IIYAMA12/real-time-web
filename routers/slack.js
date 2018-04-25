@@ -6,9 +6,9 @@ const fetchUrl = require("fetch").fetchUrl;
 
 router.get("/oauth", function (req, res, next) {
     /*
-        Ths slack API!
+        The slack API!
     */
-    fetchUrl("https://slack.com/api/oauth.access?client_id=" + process.env.client_id + "&client_secret=" + process.env.client_secret + "&code=" + req.query.code + "&redirect_uri=http://localhost:3000/oauth", function(error, meta, data){
+    fetchUrl("https://slack.com/api/oauth.access?client_id=" + process.env.client_id + "&client_secret=" + process.env.client_secret + "&code=" + req.query.code + "&redirect_uri=http://localhost:3000/oauth", function(error, meta, data) {
         if (error == undefined) {
             data = JSON.parse(data);
 
