@@ -20,6 +20,7 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 - [Socket communication events used](#socket-communication-events-used)
 - [Other communications](#other-communications)
 - [Which data is available where?](#which-data-is-available-where)
+- [Time out feedback](#time-out-feedback)
 - [Todo](#todo)
 
 
@@ -416,7 +417,7 @@ socket.on("ping_c", function () {
     }
 });
 ```
-The client informed the server that he is still alive. Save inside of the client his server-data the server-time. So that the server knows when he/she last pinged.
+The client informed the server that he/she is still alive. Save inside of the client his/her server-data the server-time. So that the server knows when he/she last pinged.
 
 
 ```JS
@@ -443,7 +444,7 @@ setInterval(function () {
 }, 1000);
 ```
 
-Check every second, if a client his last ping time hasn't been updated for 5 seconds.
+Check every second, if a client his/her last ping time hasn't been updated for 5 seconds.
 
 
 <details>
