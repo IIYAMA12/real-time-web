@@ -414,13 +414,10 @@ setInterval(function () {
             if (timeNow > lastPingTime + 5000) {
                 if (!playerPrivateData.connectionError) {
                     gameData.players.data.set(playerPrivateData.id, "connectionError", true);
-                    // gameData.players.data.set(playerPrivateData.id, "connectionError", true, true);
                     io.sockets.emit("onRemotePlayerConnectionError_s", playerPrivateData.id);
                 }
             } else if (gameData.players.data.get(playerPrivateData.id, "connectionError")) {
-                // delete playerPrivateData.connectionError;
                 gameData.players.data.set(playerPrivateData.id, "connectionError", null);
-                // gameData.players.data.set(playerPrivateData.id, "connectionError", null, true);
                 io.sockets.emit("onRemotePlayerReconnect_s", playerPrivateData.id);
             }
         }
