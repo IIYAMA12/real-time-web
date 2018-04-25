@@ -21,10 +21,6 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 - [Todo](#todo)
 
 
-## Communication
-
-![Communication between all parties](readme-content/flow-app.png)
-
 ## Interaction
 
 --- ; --------------- ; ---
@@ -203,7 +199,116 @@ socket.on("event-name", function (/* var ... */) {
 ```
 Receive a trigger event on serverside. server `> client`.
 
-## Socket events used
+## Socket communication events used
+
+### Server-side events
+
+#### Build in
+```JS
+"connected"
+"disconnect"
+```
+
+#### Custom (from client-side)
+```JS
+"ping_c"
+"onStreamOrientation_c"
+"onPlayerUsernameChange_c"
+"onSyncProjectile_c"
+```
+
+### Client-side events 
+
+#### Build in
+```JS
+"ping"
+"connect_error"
+"reconnect"
+
+// experimental
+"connect_timeout" 
+```
+
+#### Custom (from server-side)
+
+```JS
+"onSyncProjectile_s"
+"onSyncProjectileDestroy_s"
+"onPlayerDisconnect_s"
+"onPlayerReconnect_s"
+"onRemotePlayerReconnect_s"
+"onRemotePlayerConnectionError_s"
+"onStreamOrientation_s"
+"onPlayerUsernameChange_s"
+"onMapImageUpdate_s"
+
+// experimental
+"onPlayerConnect_s" 
+```
+
+## Other communications
+
+### Open Weather Map
+```JS
+base64Img.requestBase64("https://tile.openweathermap.org/map/clouds_new/1/0/0.png?appid=", function(err, res, body) {
+    mapImagesRequests.mapImage = {data: body};
+});
+```
+
+Request a base64 image from the Open Weather Map API, every 10 seconds.
+Requires the dependency: `base64-img` module.
+
+By encoding it with base64, it is easier for the client to apply the image on to the canvas.
+
+### Slack API
+
+1. Link to slack oauth website
+```HTML
+<a href="https://slack.com/oauth/authorize?client_id=349357647332.350639213591&scope=identity.basic">Login with slack</a>
+```
+
+2. Confirm oauth request
+![Slack oauth request](readme-content/slack-oauth.png)
+
+3. Receive on serverside
+```JS
+/*
+    Use a specific environment for the slack keys!
+*/
+require('dotenv').config()
+
+const express = require('express');
+const router = express.Router();
+const fetchUrl = require("fetch").fetchUrl;
+
+router.get("/oauth", function (req, res, next) {
+    /*
+        The slack API!
+    */
+    fetchUrl("https://slack.com/api/oauth.access?client_id=" + process.env.client_id + "&client_secret=" + process.env.client_secret + "&code=" + req.query.code + "&redirect_uri=http://localhost:3000/oauth", function(error, meta, data) {
+        if (error == undefined) {
+            data = JSON.parse(data);
+
+            /*
+                Save in a session if you want. (make sure to download the express session module)
+            */
+            req.session.slackAccessToken = data.access_token;
+            req.session.slackUsername = data.user.name;
+            
+            res.redirect("/");
+        }
+    });
+});
+
+module.exports = router;
+```
+
+[Slack oauth documentation](https://api.slack.com/docs/oauth)
+
+
+## Which data is available where?
+
+![Communication between all parties](readme-content/flow-app.png)
 
 
 
