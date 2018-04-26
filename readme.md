@@ -422,8 +422,8 @@ socket.on("onStreamOrientation_c", function (newOrientationData) {
 });
 ```
 
+---
 
-Orientation validation/update
 ```JS
 const orientationUpdate = {
     execute: function (newData, data) {
@@ -490,6 +490,7 @@ const orientationUpdate = {
     ]
 };
 ```
+Orientation validation/update
 
 #### Client (remote player)
 ```JS
