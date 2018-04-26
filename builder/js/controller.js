@@ -48,7 +48,6 @@ const controller = {
                         e.preventDefault();
                         break;
                 };
-                
             }
         }
     }
