@@ -7,6 +7,7 @@
     <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/game-example.png" alt="Screenshot of the game version 1.0.0">
 </details>
 
+---
 
 ![Screenshot of the game version 2.0.0](readme-content/game-example-v2.png)
 
