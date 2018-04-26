@@ -351,7 +351,7 @@ By encoding it with base64, it is easier for the client to apply the image on to
 /*
     Use a specific environment for the slack keys!
 */
-require('dotenv').config()
+require('dotenv').config();
 
 const express = require('express');
 const router = express.Router();
@@ -615,6 +615,16 @@ Add and remove projectiles clientside.
 
 ## Time out feedback
 
+<details>
+    <summary>Visual representation</summary>
+    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-remote-player.png" alt="time out remote player">
+    <p>A remote player has timed out</p>
+    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-local-player.png" alt="time out localPlayer">
+    <p>The localPlayer has timed out</p>
+</details>
+
+---
+
 ### Server-side config
 ```JS
 const io = require("socket.io")(server, {
@@ -742,13 +752,7 @@ setInterval(function () {
 Check every second, if a client his/her last ping time has(n't) been updated for 5 seconds.
 
 
-<details>
-    <summary>Visual representation</summary>
-    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-remote-player.png" alt="time out remote player">
-    <p>A remote player has timed out</p>
-    <img src="https://github.com/IIYAMA12/real-time-web/blob/development/readme-content/time-out-local-player.png" alt="time out localPlayer">
-    <p>The localPlayer has timed out</p>
-</details>
+
 
 
 ## Todo list
