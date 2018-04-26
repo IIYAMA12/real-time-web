@@ -38,7 +38,7 @@ Make sure to open port 3000(express default) and port 4444(Socket).
 - Arrow-right: Turn right*
 - Spacebar: Shoot a projectile*
 
-* Key hold supported
+\* Key hold supported
 
 
 ```JS
