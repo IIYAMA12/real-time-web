@@ -284,7 +284,7 @@ Receive a trigger event on server-side. server `> client`.
 
 ### Server-side events
 
-#### Build in
+#### Built in
 ```JS
 "connected"
 "disconnect"
@@ -302,7 +302,7 @@ Receive a trigger event on server-side. server `> client`.
 
 ### Client-side events 
 
-#### Build in
+#### Built in
 ```JS
 "ping"
 "connect_error"
