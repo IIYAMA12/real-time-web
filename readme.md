@@ -12,24 +12,89 @@ This web app lets you fly with your spaceship inside of an area. Every remote pl
 
 ## Table of contents
 
-- [Interaction](#interaction)
+- [Installation](#installation)
+- [Controls](#controls)
 - [Express + sockets, which ports do I have to open?](#express--sockets-which-ports-do-i-have-to-open)
 - [Expose when hosting on localhost](#expose-when-hosting-on-localhost)
 - [Start the server!](#start-the-server)
 - [Socket](#socket)
+- [Which data is available where?](#which-data-is-available-where)
 - [Socket communication events used](#socket-communication-events-used)
 - [Other communications](#other-communications)
-- [Which data is available where?](#which-data-is-available-where)
 - [Time out feedback](#time-out-feedback)
-- [Todo](#todo)
+- [Todo list](#todo-list)
+
+## Installation
+
+```BASH
+$ npm install
+```
+
+Make sure to open port 3000(express default) and port 4444(Socket).
+
+## Controls
+
+- Arrow-left: Turn left*
+- Arrow-right: Turn right*
+- Spacebar: Shoot a projectile*
+
+* Key hold supported
 
 
-## Interaction
+```JS
+const controller = {
+    init: function () {
+        document.addEventListener("keydown", this.eventFunctions.keyStateChange);
+        document.addEventListener("keyup", this.eventFunctions.keyStateChange);
+    },
+    keyState: {
+        left: false,
+        right: false,
+        space: false
+    },
+    eventFunctions: {
+        keyStateChange: function (e) {
+            if (usernameInputElement != document.activeElement) {
+                if (!e) {
+                    e = window.event;
+                }
+                
+                const state = e.type == "keydown" ? true : false;
+            
+                let code = e.keyCode;
+                if (e.charCode && code == 0) {
+                    code = e.charCode;
+                }
 
---- ; --------------- ; ---
---- MORE is COMING SOON ---
---- ; --------------- ; ---
-
+                switch(code) {
+                    case 37:
+                        // Key left.
+                        controller.keyState.left = state;
+                        e.preventDefault();
+                        break;
+                    case 38:
+                        // Key up.
+                        break;
+                    case 39:
+                        // Key right.
+                        controller.keyState.right = state;
+                        e.preventDefault();
+                        break;
+                    case 40:
+                        // down
+                        break;
+                    case 32: 
+                        // space
+                        controller.keyState.space = state;
+                        e.preventDefault();
+                        break;
+                };
+            }
+        }
+    }
+};
+```
+Code for the controller.
 
 ## Express + sockets, which ports do I have to open?
 
@@ -58,7 +123,7 @@ Using express with sockets.
 
 ---
 
-In this project I still want to use ejs templates so there are two different apps saved in to two different variables. The default app is running at port 3000 and the socket app is running at port 4444. This means that if you want to expose the website to the internet, you have to set 2 ports open.
+In this project I still want to use EJS templates so there are two different apps saved in to two different variables. The default app is running at port 3000 and the socket app is running at port 4444. This means that if you want to expose the website to the internet, you have to set 2 ports open.
 
 ## Expose when hosting on localhost
 
@@ -66,19 +131,19 @@ Enable connection and ports for your website:
 ```bash
 npm run expose
 ```
-Expose the webite to the internet, part 1. (main app)
+Expose the website to the internet, part 1. (main app)
 
 ---
 
 ```bash
 npm run expose2
 ```
-Expose the webite to the internet, part 2. (socket app)
+Expose the website to the internet, part 2. (socket app)
 
 ---
 
-### Edit clientside
-You have to make a little change on the clientside, before exposing with ngrok is going to work.
+### Edit client-side
+You have to make a little change on the client-side, before exposing with ngrok is going to work.
 
 ---
 
@@ -87,7 +152,7 @@ You have to make a little change on the clientside, before exposing with ngrok i
 gulp
 ```
 * Gulp will minify your scripts.
-* Let you use scss and minify it.
+* Let you use SCSS and minify it.
 
 ---
 
@@ -105,7 +170,7 @@ const socket = io.connect('http://localhost:4444');
 ```JS
 const socket = io.connect('http://XXXX.ngrok.io ');
 ```
-3.2 When using ngrok, you have to replace the clienside io-connection-address with the IP of the socket app. !important!
+3.2 When using ngrok, you have to replace the client-side io-connection-address with the IP of the socket app. !important!
 
 
 ## Start the server!
@@ -157,7 +222,7 @@ Detect when a client has been disconnected. `server`
 ```JS
 socket.emit("event-name" /*, var ... */);
 ```
-Trigger an event on clientside to serverside. `client >` server
+Trigger an event on client-side to server-side. `client >` server
 Arguments can be passed.
 
 ---
@@ -169,7 +234,7 @@ io.on("connection", function (socket) {
     });
 });
 ```
-Receive a trigger event on serverside. client `> server`. The parameters are containing the data that is attached to the event.
+Receive a trigger event on server-side. client `> server`. The parameters are containing the data that is attached to the event.
 
 ---
 
@@ -179,7 +244,7 @@ io.on("connection", function (socket) {
 });
 ```
 
-Trigger an event to a specific client on serverside to clientside. `server >` client.
+Trigger an event to a specific client on server-side to client-side. `server >` client.
 Arguments can be passed.
 
 ---
@@ -190,7 +255,7 @@ io.on("connection", function (socket) {
 });
 ```
 
-Trigger an event to all clients, `except the sender`, on serverside to clientside. `server >` client.
+Trigger an event to all clients, `except the sender`, on server-side to client-side. `server >` client.
 Arguments can be passed.
 
 ---
@@ -200,7 +265,11 @@ socket.on("event-name", function (/* var ... */) {
 
 });
 ```
-Receive a trigger event on serverside. server `> client`.
+Receive a trigger event on server-side. server `> client`.
+
+## Which data is available where?
+
+![Communication between all parties](readme-content/flow-app.png)
 
 ## Socket communication events used
 
@@ -277,7 +346,7 @@ By encoding it with base64, it is easier for the client to apply the image on to
 2. Confirm oauth request
 ![Slack oauth request](readme-content/slack-oauth.png)
 
-3. Receive on serverside
+3. Receive on server-side
 ```JS
 /*
     Use a specific environment for the slack keys!
@@ -312,10 +381,236 @@ module.exports = router;
 
 [Slack oauth documentation](https://api.slack.com/docs/oauth)
 
+## Stream player behaviour
 
-## Which data is available where?
+### Orientation
 
-![Communication between all parties](readme-content/flow-app.png)
+#### Client (local player)
+```JS
+setInterval(function (){
+    if (!connectionError) {
+        socket.emit("onStreamOrientation_c", yourData.orientation);
+    }
+}, 100);
+```
+Tell the server every 0.1 second what the orientation of the player is.
+
+#### Server
+```JS
+socket.on("onStreamOrientation_c", function (newOrientationData) {
+    const playerData = gameData.players.data.session.getRef(socket.id);
+    
+    if (playerData != undefined && playerData.id != undefined) {
+        const orientation = gameData.players.data.get(playerData.id, "orientation");
+
+        /*
+            Orientation validation and update.
+        */
+        orientationUpdate.execute(newOrientationData, orientation);
+
+        socket.broadcast.emit("onStreamOrientation_s", playerData.id, orientation);
+    }
+});
+```
+
+
+Orientation validation/update
+```JS
+const orientationUpdate = {
+    execute: function (newData, data) {
+        const checkList = this.checkList;
+        for (let i = 0; i < checkList.length; i++) {
+            const check = checkList[i];
+            if (newData[check.key]) {
+                check.func(newData, data);
+            }
+        }
+    },
+    checkList: [
+        {
+            key:"position", 
+            func: function (newData, data) {
+                if (newData.position != undefined && data != undefined) {
+                    const x = convertToNumber(newData.position.x);
+                    const y = convertToNumber(newData.position.y);
+                    
+                    if (data.position == undefined) {
+                        data.position = {x: 0, y: 0};
+                    }
+
+                    if (x != undefined) {
+                        data.position.x = x;
+                    }
+                    if (y != undefined) {
+                        data.position.y = y;
+                    }
+                }
+            }
+        },
+        {
+            key:"rotation", 
+            func: function (newData, data) {
+                if (newData.rotation != undefined && data != undefined) {
+                    const value = convertToNumber(newData.rotation);
+                    if (value != undefined) {
+                        data.rotation = value;
+                    }
+                }
+            }
+        },
+        {
+            key:"velocity", 
+            func: function (newData, data) {
+                if (newData.velocity != undefined && data != undefined) {
+                    const x = convertToNumber(newData.velocity.x);
+                    const y = convertToNumber(newData.velocity.y);
+                    
+                    if (data.velocity == undefined) {
+                        data.velocity = {x: 0, y: 0};
+                    }
+
+                    if (x != undefined) {
+                        data.velocity.x = x;
+                    }
+                    if (y != undefined) {
+                        data.velocity.y = y;
+                    }
+                }
+            }
+        }
+    ]
+};
+```
+
+#### Client (remote player)
+```JS
+socket.on("onStreamOrientation_s", function (id, orientation) {
+    if (playersData[id] != undefined) {
+        playersData[id].orientation = orientation;
+    }
+});
+```
+
+### Shooting
+
+#### Client (local player)
+```JS
+function projectileFireRate (timeStamp) {
+
+    if (yourData != undefined && controller.keyState.space && timeStamp > nextProjectileFireTime && !connectionError) {
+        const position = yourData.orientation.position;
+
+        let rotation = yourData.orientation.rotation;
+
+        const rotOffset =  ((rotation - 90) * 3.141592653 * 2)/360;
+        
+        const projectile = {
+            position: {},
+            velocity: {}
+        }
+
+        const offset = 6;
+
+        projectile.position.x = position.x + (Math.cos(rotOffset) * offset);
+        projectile.position.y  = position.y + (Math.sin(rotOffset) * offset);
+
+        projectile.velocity.x = (projectile.position.x - position.x) / offset,
+        projectile.velocity.y = (projectile.position.y - position.y) / offset
+
+
+        socket.emit("onSyncProjectile_c", projectile);
+
+        nextProjectileFireTime = timeStamp + 300;
+    }
+}
+```
+Tell the server where to create a projectile.
+
+#### Server
+```JS
+socket.on("onSyncProjectile_c", function (projectileData) {
+    const playerData = gameData.players.data.session.getRef(socket.id);
+    if (playerData != undefined && playerData.id != undefined) {
+        const id = randomstring.generate();
+
+
+        
+        const newProjectile = {
+            id: id,
+            owner: playerData.id,
+        };
+
+        if (projectileData.velocity) {
+            const x = convertToNumber(projectileData.velocity.x);
+            const y = convertToNumber(projectileData.velocity.y);
+            if (x != undefined && y != undefined) {
+                newProjectile.velocity = {x: x, y: y};
+            }
+        }
+
+        if (projectileData.position) {
+            const x = convertToNumber(projectileData.position.x);
+            const y = convertToNumber(projectileData.position.y);
+            if (x != undefined && y != undefined) {
+                newProjectile.position = {x: x, y: y};
+            }
+        }
+
+        if (newProjectile.velocity != undefined && newProjectile.position != undefined) {
+            gameData.projectiles[gameData.projectiles.length] = newProjectile;
+            
+            setTimeout(destroyProjectile, 1000, id);
+
+            io.sockets.emit("onSyncProjectile_s", newProjectile);
+        }
+    }
+});
+```
+Sync to all players that a projectile has been created.
+
+
+```JS
+/*
+    This function can destroy a projectile based on it's ID.
+*/
+function destroyProjectile (id) {
+    const projectiles = gameData.projectiles;
+    for (let i = 0; i < projectiles.length; i++) {
+        const projectileData = projectiles[i];
+        if (projectileData.id == id) {
+            delete projectileData.id;
+            break;
+        }
+    }
+    io.sockets.emit("onSyncProjectileDestroy_s", id);
+}
+```
+Destroy a projectile ingame.
+
+#### Client (all players)
+```JS
+/*
+    Create a projectile
+*/
+socket.on("onSyncProjectile_s", function (projectileData) {
+    projectiles[projectiles.length] = projectileData;
+});
+
+/*
+    Destroy a projectile
+*/
+socket.on("onSyncProjectileDestroy_s", function (id) {
+    for (let i = 0; i < projectiles.length; i++) {
+        const projectile = projectiles[i];
+        if (projectile.id === id) {
+            projectiles.splice(i, 1);
+            break;
+        }
+    }
+});
+```
+Add and remove projectiles clientside.
+
 
 
 ## Time out feedback
@@ -444,7 +739,7 @@ setInterval(function () {
 }, 1000);
 ```
 
-Check every second, if a client his/her last ping time hasn't been updated for 5 seconds.
+Check every second, if a client his/her last ping time has(n't) been updated for 5 seconds.
 
 
 <details>
@@ -456,11 +751,11 @@ Check every second, if a client his/her last ping time hasn't been updated for 5
 </details>
 
 
-## Todo
+## Todo list
 - [X] Added private and public player data. (The session socket ID is for example only available in the private data, and the user game ID is available in both.)
 - [X] Stream orientation with remote players
 - [X] Sync username with remote players
 - [X] Clean up disconnected remote players.
 - [ ] Collision detection
-- [ ] Fix no focus on browser tab, which causes the animation frame to stop. This will cause desync, because the player spaceship animation goes on by the remote players.
+- [ ] Fix no focus on browser tab, which causes the animation frame to stop. This will cause de-sync, because the player spaceship animation goes on by the remote players.
 - [ ] Slack API fix session bug.
